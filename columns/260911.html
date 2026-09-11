@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>实例 · Forest306</title>
+<meta name="description" content="Forest306 的计算机学习记录。">
+<link rel="icon" href="/website/assets/avatar.jpg">
+<link rel="stylesheet" href="/website/assets/style.css">
+</head>
+<body data-anim="in">
+
+<header class="site-header">
+  <a class="brand" href="/website/index.html">
+    <img class="avatar" src="/website/assets/avatar.jpg" alt="头像">
+    <span>
+      <span class="brand-name">Forest306</span><br>
+      <span class="brand-sub">personal site</span>
+    </span>
+  </a>
+  <nav class="nav">
+    <a class="nav-link" href="/website/index.html">主页</a>
+    <a class="nav-link" href="/website/about.html">开盒</a>
+    <a class="nav-link is-active" href="/website/columns.html">专栏</a>
+    <a class="nav-link" href="/website/diary.html">日记</a>
+    <a class="nav-link" href="/website/links.html">链接</a>
+  </nav>
+</header>
+
+<div class="layout single">
+
+  <main class="page prose">
+
+    <!-- 日期改这里 -->
+    <p class="eyebrow">专栏 / 2026-09-11</p>
+
+    <!-- 标题 -->
+    <h1>实例</h1>
+
+    <!-- 开头那句话，可删 -->
+    <p class="lead">简单的井字棋程序</p>
+
+    <!-- ===== 一个小节 ===== 想加就整块复制，改标题和正文 -->
+    <h2>小节标题</h2>
+    <p>
+      以红绿区分双方，通过输入坐标来确定下棋位置，率先连成三子为胜
+    </p>
+
+    <!-- ===== 代码块（不用就整块删掉） ===== -->
+<pre><code>/* 代码写在这里，缩进和换行会原样保留 */
+
+#include <stdio.h>
+#include <stdlib.h>
+#define ROW 3
+#define COL 3
+#define STEP_MAX 9
+#define STEP_MIN 5
+#define RED "\033[31m"
+#define GREEN "\033[32m"
+#define RESET "\033[0m"
+int count = 0;
+void reset_board(char arr[ROW][COL],int r,int c)
+{
+    for(int i = 0;i < r;i ++)
+    {
+        for(int j = 0;j < c;j ++)
+        {
+            arr[i][j] = '*';
+        }
+    }
+}
+void display_board(char arr[ROW][COL],int r,int c)
+{
+    printf("  0 1 2\n");
+    for(int i = 0;i < r;i ++)
+    {
+        printf("%d ",i);
+        for(int j = 0;j < c;j ++)
+        {
+           
+            switch(arr[i][j])
+            {
+                case 'O':
+                    printf(RED"%c "RESET,arr[i][j]);
+                    break;
+                case 'X':
+                    printf(GREEN"%c "RESET,arr[i][j]);
+                    break;
+                default:
+                    printf("%c ",arr[i][j]);
+                    break;
+            }
+        }
+        printf("\n");
+    }
+}
+int over_examine(char arr[ROW][COL],int x, int y)
+{
+    if((arr[0][0] == arr[0][1] && arr[0][1] == arr[0][2] && arr[0][1] != '*') ||
+       (arr[1][0] == arr[1][1] && arr[1][1] == arr[1][2] && arr[1][1] != '*') ||
+       (arr[2][0] == arr[2][1] && arr[2][1] == arr[2][2] && arr[2][1] != '*') ||
+       // 列
+       (arr[0][0] == arr[1][0] && arr[1][0] == arr[2][0] && arr[1][0] != '*') ||
+       (arr[0][1] == arr[1][1] && arr[1][1] == arr[2][1] && arr[1][1] != '*') ||
+       (arr[0][2] == arr[1][2] && arr[1][2] == arr[2][2] && arr[1][2] != '*') ||
+       // 对角线
+       (arr[0][0] == arr[1][1] && arr[1][1] == arr[2][2] && arr[1][1] != '*') ||
+       (arr[0][2] == arr[1][1] && arr[1][1] == arr[2][0] && arr[1][1] != '*'))
+     {
+        if(count % 2 ==1)
+            return 2;//红方胜利
+        else
+            return 3;//绿方胜利
+     }
+     else
+        return 1;
+}
+int main()
+{
+    char board[ROW][COL];
+    int r = ROW,c = COL;
+    int x,y;
+    int game_over_num = 1;
+   
+    reset_board(board,r,c);
+    while(1)
+    {
+        if(count == STEP_MAX)
+        {
+            printf("平局，游戏结束\n");
+            break;
+        }
+        display_board(board,r,c);
+        while(game_over_num)
+        {
+        x = -1,y = -1;
+        printf("输入对应坐标:");
+        scanf("%d %d",&x,&y);
+        if((x == 0 ||x == 1||x == 2) && (y == 0||y == 1|| y ==2)&&(board[x][y] != 'O')&&(board[x][y] != 'X'))
+            {
+                count++;
+                break;
+            }
+        else
+            printf("输入有误或者输入了已经落子的坐标，请重新输入\n");
+        }
+        if(count % 2 == 1)
+            board[x][y] = 'O';
+        else
+            board[x][y] = 'X';
+        
+        if(count >= STEP_MIN && count <= STEP_MAX)
+            game_over_num = over_examine(board,r,c);
+        if(count <= STEP_MAX)
+        {
+            if(game_over_num == 1)
+                continue;
+            else if(game_over_num == 2)
+            {
+                printf("红方胜利\n");
+                break;
+            }
+            else if(game_over_num == 3)
+            {
+                printf("绿方胜利\n");
+                break;
+            }
+            else
+            {
+                printf("出现bug,游戏自动结束\n");
+                break;
+            }
+        }
+        
+        
+
+
+
+    }
+
+    system("pause");
+    return 0;
+
+}</code></pre>
+
+    <!-- ===== 列表（不用就整块删掉） ===== -->
+    <h2>待改进之处</h2>
+    <ul>
+      <li>在判定连成三子时使用的是穷举的方法，代码比较屎山（</li>
+      <li>缺少图形化的操作界面</li>
+      <li>输入坐标时缺少对应提示（实则是我懒得写了</li>
+    </ul>
+
+    <!-- 返回链接，建议留着 -->
+    <p class="back-link"><a href="/website/columns.html">← 返回专栏</a></p>
+    <a href="/website/columns/260911.exe">点击下载编译后程序</a>
+  </main>
+
+  <footer class="site-footer">
+  © 2026 Forest306
+  </footer>
+
+</div>
+
+<script src="/website/assets/main.js"></script>
+</body>
+</html>

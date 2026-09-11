@@ -222,7 +222,52 @@ hr.rule{ border:0; border-top:1px solid var(--line); margin:56px 0; }
   text-transform:uppercase;
 }
 .diary-item h3{ font-size:17px; font-weight:600; margin:10px 0 8px; }
+.diary-item h3 a{ transition:color .25s ease; }
+.diary-item h3 a:hover{ color:var(--accent); }
 .diary-item p{ margin:0; }
+/* 列表里直接当正文用的链接（日记 / 专栏的条目） */
+.diary-item > a{
+  display:inline-block;
+  font-size:14.5px;
+  color:var(--accent);
+  transition:opacity .25s ease;
+}
+.diary-item > a:hover{
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+
+/* 专栏正文里的代码 */
+pre{
+  margin:0 0 20px;
+  padding:18px 20px;
+  background:#fafafa;
+  border:1px solid var(--line);
+  overflow-x:auto;
+}
+pre code{
+  background:none;
+  padding:0;
+  font-size:13px;
+  line-height:1.75;
+  color:#333;
+}
+code{
+  font-family:"SF Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size:.9em;
+  background:#f6f6f6;
+  padding:2px 6px;
+  border-radius:3px;
+  color:#333;
+}
+.prose ul,
+.prose ol{ margin:0 0 18px; padding-left:22px; color:var(--sub); }
+.prose li{ margin:6px 0; }
+.prose strong{ font-weight:600; color:var(--ink); }
+
+.back-link{ margin-top:56px; font-size:13px; }
+.back-link a{ color:var(--muted); transition:color .25s ease; }
+.back-link a:hover{ color:var(--ink); }
 
 /* 链接页 */
 .link-list{ margin-top:8px; }
@@ -258,6 +303,17 @@ hr.rule{ border:0; border-top:1px solid var(--line); margin:56px 0; }
   font-size:14px;
   letter-spacing:.08em;
   color:var(--muted);
+}
+
+/* 404 的大号数字 */
+.err-code{
+  margin:72px 0 0;
+  font-family:"SF Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size:clamp(48px, 12vw, 92px);
+  line-height:1;
+  letter-spacing:.12em;
+  color:var(--line);
+  user-select:none;
 }
 
 /* 小标签 */
@@ -314,8 +370,10 @@ body[data-anim="out"] .site-header{ animation:fadeOut .22s ease both; }
 @media (max-width:640px){
   :root{ --pad:20px; }
   .site-header{ flex-direction:column; align-items:flex-start; gap:12px; padding:14px var(--pad); }
-  .nav{ gap:18px; width:100%; justify-content:space-between; }
+  .nav{ gap:14px; width:100%; justify-content:space-between; flex-wrap:wrap; }
+  .nav-link{ font-size:13px; }
   .brand-sub{ display:none; }
   .page{ padding-top:44px; }
   .facts .row{ grid-template-columns:92px 1fr; }
+  pre{ padding:14px; }
 }
