@@ -72,6 +72,23 @@
 
 </div>
 
+<!-- 右下角：背景音乐（点一下播放 / 暂停，↗ 去网易云） -->
+<audio id="bgm" src="/website/assets/for-river.mp3" preload="metadata" loop></audio>
+
+<div class="now-playing" id="nowPlaying" data-state="ready">
+  <button class="np-toggle" type="button" aria-label="播放或暂停背景音乐">
+    <span class="dot"></span>
+    <span class="label">点击播放</span>
+    <span class="title">For River</span>
+  </button>
+  <a class="np-ext"
+     href="https://music.163.com/#/song?id=1645112"
+     target="_blank" rel="noopener"
+     title="在网易云音乐打开">↗</a>
+</div>
+
 <script src="/website/assets/main.js"></script>
+<script src="/website/assets/player.js"></script>
+
 </body>
 </html>

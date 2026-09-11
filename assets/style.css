@@ -311,6 +311,19 @@ code{
 .link-item:hover .arrow{ transform:translateX(5px); color:var(--accent); }
 .link-item:hover .name{ color:var(--accent); }
 
+/* 链接条目左侧的品牌图标 */
+.link-item{ justify-content:flex-start; gap:14px; }
+.link-item .ico{
+  flex:none;
+  width:18px;
+  height:18px;
+  color:var(--sub);
+  transition:color .25s ease;
+}
+.link-item .ico svg{ display:block; width:100%; height:100%; }
+.link-item .name{ flex:1; }
+.link-item:hover .ico{ color:var(--accent); }
+
 /* 友链空位 */
 .friend-slot{
   margin-top:18px;
@@ -354,6 +367,85 @@ code{
   color:var(--muted);
   letter-spacing:.06em;
 }
+
+/* ---------------- 右下角：背景音乐 ---------------- */
+
+.now-playing{
+  position:fixed;
+  right:var(--pad);
+  bottom:20px;
+  z-index:20;
+  display:inline-flex;
+  align-items:stretch;
+  background:rgba(255,255,255,.94);
+  border:1px solid var(--line);
+  border-radius:999px;
+  overflow:hidden;
+  user-select:none;
+  transition:border-color .25s ease;
+}
+.now-playing:hover{ border-color:#dcdcdc; }
+
+.np-toggle{
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  padding:6px 12px 6px 11px;
+  border:0;
+  background:none;
+  font:inherit;
+  font-size:10.5px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--muted);
+  cursor:pointer;
+  transition:color .25s ease;
+}
+.np-toggle:hover{ color:var(--sub); }
+
+.now-playing .dot{
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:#d8d8d8;
+  flex:none;
+  transition:background .25s ease;
+}
+.now-playing .title{
+  font-size:12px;
+  letter-spacing:.04em;
+  text-transform:none;
+  color:var(--ink);
+  transition:color .25s ease;
+}
+.np-toggle:hover .title{ color:var(--accent); }
+
+/* 正在播放：小蓝点呼吸 */
+.now-playing[data-state="playing"] .dot{
+  background:var(--accent);
+  animation:np-pulse 2.6s ease-in-out infinite;
+}
+/* 等第一次点击 */
+.now-playing[data-state="ready"] .dot{ animation:np-pulse 3.4s ease-in-out infinite; }
+/* 暂停 / 缺文件：点变灰，歌名也压暗 */
+.now-playing[data-state="paused"] .title,
+.now-playing[data-state="error"] .title{ color:var(--muted); }
+
+/* 外链到网易云 */
+.np-ext{
+  display:inline-flex;
+  align-items:center;
+  padding:0 12px;
+  border-left:1px solid var(--line);
+  font-size:12px;
+  color:var(--muted);
+  transition:color .25s ease, background .25s ease;
+}
+.np-ext:hover{ color:var(--accent); background:#fafafa; }
+
+@keyframes np-pulse{ 0%,100%{opacity:1} 50%{opacity:.25} }
+
+/* ---------------- 跳转动画 ---------------- */
 
 /* ---------------- 跳转动画 ---------------- */
 
