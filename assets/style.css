@@ -381,6 +381,10 @@ code{
   user-select:none;
 }
 
+/* 留言板：giscus 容器上下留白 */
+.giscus{ margin:6px 0 10px; }
+.giscus iframe{ width:100%; }
+
 /* 小标签 */
 .tags{ display:flex; flex-wrap:wrap; gap:8px; margin:28px 0 0; padding:0; list-style:none; }
 .tags li{

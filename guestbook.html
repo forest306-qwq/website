@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>计算机学习 · Forest306</title>
-<meta name="description" content="Forest306 的计算机学习笔记">
+<title>留言 · Forest306</title>
+<meta name="description" content="Forest306 的留言板">
 <link rel="icon" href="/website/assets/avatar.jpg">
 <link rel="stylesheet" href="/website/assets/style.css">
 </head>
@@ -21,36 +21,52 @@
   <nav class="nav">
     <a class="nav-link" href="/website/index.html">主页</a>
     <a class="nav-link" href="/website/about.html">开盒</a>
-    <a class="nav-link is-active" href="/website/columns.html">专栏</a>
+    <a class="nav-link" href="/website/columns.html">专栏</a>
     <a class="nav-link" href="/website/diary.html">日记</a>
     <a class="nav-link" href="/website/links.html">链接</a>
-    <a class="nav-link" href="/website/guestbook.html">留言</a>
+    <a class="nav-link is-active" href="/website/guestbook.html">留言</a>
   </nav>
 </header>
 
 <div class="layout single">
 
-  <main class="page">
+  <main class="page prose">
 
-    <p class="eyebrow">Columns / 计算机学习</p>
-    <h1>计算机学习</h1>
-    <p class="lead">
-      学着学着总得写点什么，不然过两周就把自己踩过的坑忘干净了
+    <p class="eyebrow">Guestbook</p>
+    <h1>留言板</h1>
+    <p class="lead">想说什么就写在这里，看到了会回</p>
+
+    <h2>留言</h2>
+
+    <!--
+      留言用的是 giscus，内容存在本仓库的 Discussions（General 分类）里
+      想换样子：data-theme 可选 light / dark / preferred_color_scheme
+                （本站是永远白底，所以固定用 light，跟随系统的深色会格格不入）
+      想换分类：改 data-category 名字 + 去 giscus.app 重新抄一遍 data-category-id
+    -->
+    <div class="giscus"></div>
+    <script src="https://giscus.app/client.js"
+            data-repo="forest306-qwq/website"
+            data-repo-id="R_kgDOUVGF7A"
+            data-category="General"
+            data-category-id="DIC_kwDOUVGF7M4DFdCJ"
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-theme="light"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async>
+    </script>
+
+    <h2>不方便登录的话</h2>
+    <p>
+      留言要一个 GitHub 账号（算是防刷的门槛）如果懒得登录，
+      直接发邮件给我也行：<a href="mailto:yuk1@bupt.edu.cn">yuk1@bupt.edu.cn</a>
     </p>
-
-    <h2>记录</h2>
-
-    <article class="diary-item">
-      <div class="date">2026 / 09 / 11</div>
-      <h3>C语言入门：井字棋</h3>
-      <a href="/website/columns/260911">简单的游戏，简单的代码</a>
-    </article>
-
-    <!-- 添加笔记：
-         1. 复制 columns/260911.html 改名（同日多篇就加后缀，如 260911-2.html）
-         2. 在上面复制一个 <article class="diary-item">，改日期、标题、摘要和 <a href> -->
-
-    <p class="back-link"><a href="/website/columns.html">← 返回专栏</a></p>
 
   </main>
 

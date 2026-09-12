@@ -76,6 +76,22 @@
     });
   }
 
+  /* -------- 延迟执行换进来的 <script src> -------- */
+  /* 用 replaceWith 插进来的 <script> 浏览器不会执行，
+     所以像 giscus 这种需要自己重建一个，它才会真正加载 */
+
+  function runScripts(root) {
+    var list = root.querySelectorAll("script[src]");
+    Array.prototype.forEach.call(list, function (old) {
+      var s = document.createElement("script");
+      Array.prototype.forEach.call(old.attributes, function (attr) {
+        s.setAttribute(attr.name, attr.value);
+      });
+      s.async = true;
+      old.parentNode.replaceChild(s, old);
+    });
+  }
+
   function navigate(href, push) {
     if (busy) return;
     busy = true;
@@ -88,6 +104,7 @@
       if (!current) throw new Error("当前页没有 .layout");
 
       current.replaceWith(data.layout);       // 播放器在 .layout 之外，不受影响
+      runScripts(data.layout);                // 让换进来的脚本真正跑起来
       if (data.title) document.title = data.title;
 
       if (push) history.pushState({ href: href }, "", href);
