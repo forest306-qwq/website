@@ -513,6 +513,27 @@ code{
 
 @keyframes np-pulse{ 0%,100%{opacity:1} 50%{opacity:.25} }
 
+/* ---------------- 页脚统计（存活时间 + 访问量） ---------------- */
+
+.site-footer .uptime{
+  display:inline-block;
+  margin-left:14px;
+}
+.site-footer .visit{
+  display:inline-block;
+  margin-left:14px;
+}
+.site-footer .visit > span{
+  display:none;                       /* 数据没回来之前先不占位，避免闪出空数字 */
+  margin-right:14px;
+  white-space:nowrap;
+}
+.site-footer .num{
+  font-family:"SF Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  letter-spacing:.08em;
+  color:var(--ink);
+}
+
 /* ---------------- 跳转动画 ---------------- */
 
 /* ---------------- 跳转动画 ---------------- */

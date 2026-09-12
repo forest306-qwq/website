@@ -96,6 +96,9 @@
       window.scrollTo(0, 0);
       document.body.dataset.anim = "in";
       busy = false;
+
+      // 换页也算一次浏览，让访问统计补上一次
+      if (typeof window.__countReload === "function") window.__countReload();
     }).catch(function () {
       // 换页失败 → 老老实实整页跳
       window.location.href = href;
