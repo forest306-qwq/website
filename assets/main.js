@@ -35,13 +35,31 @@
   }
 
   /* -------- 当前页导航高亮 -------- */
+  /* 取「最长匹配」的那个分页，这样子页面（columns/song.html 等）
+     也能正确把「专栏」点亮，而不会同时点亮「主页」 */
 
   function highlight() {
-    var here = (window.location.pathname.split("/").pop() || "index.html").toLowerCase();
-    document.querySelectorAll(".nav-link").forEach(function (a) {
-      var href = a.getAttribute("href") || "";
-      a.classList.toggle("is-active", href.split("/").pop().toLowerCase() === here);
+    var path = window.location.pathname;
+    var best = null;
+    var bestLen = -1;
+
+    var links = Array.prototype.slice.call(document.querySelectorAll(".nav-link"));
+
+    links.forEach(function (a) {
+      var section = (a.getAttribute("href") || "")
+        .replace(/\.html$/, "")
+        .replace(/\/index$/, "");          // /website/columns
+      if (section === "") section = "/website";
+
+      var hit = (path === section ||
+                 path === section + "/" ||
+                 path.indexOf(section + "/") === 0 ||
+                 path.indexOf(section + ".") === 0);   // /website/columns.html 这类
+
+      if (hit && section.length > bestLen) { best = a; bestLen = section.length; }
     });
+
+    links.forEach(function (a) { a.classList.toggle("is-active", a === best); });
   }
 
   /* -------- 局部换页 -------- */

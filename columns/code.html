@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>404 · Forest306</title>
-<meta name="description" content="页面不存在">
+<title>计算机学习 · Forest306</title>
+<meta name="description" content="Forest306 的计算机学习笔记">
 <link rel="icon" href="/website/assets/avatar.jpg">
 <link rel="stylesheet" href="/website/assets/style.css">
 </head>
@@ -21,7 +21,7 @@
   <nav class="nav">
     <a class="nav-link" href="/website/index.html">主页</a>
     <a class="nav-link" href="/website/about.html">开盒</a>
-    <a class="nav-link" href="/website/columns.html">专栏</a>
+    <a class="nav-link is-active" href="/website/columns.html">专栏</a>
     <a class="nav-link" href="/website/diary.html">日记</a>
     <a class="nav-link" href="/website/links.html">链接</a>
   </nav>
@@ -31,38 +31,25 @@
 
   <main class="page">
 
-    <p class="eyebrow">Error 404 / Not found</p>
-    <h1>这一页不存在</h1>
+    <p class="eyebrow">Columns / 计算机学习</p>
+    <h1>计算机学习</h1>
     <p class="lead">
-      你要找的东西大概已经被移走了，或者从一开始就只是个错误链接
-      不用在门口站着了，随便挑一条路走吧
+      学着学着总得写点什么，不然过两周就把自己踩过的坑忘干净了
     </p>
 
-    <h2>从这些地方重新开始</h2>
-    <div class="entries">
-      <a class="entry" href="/website/index.html">
-        <span class="t">主页 —— 回到起点</span>
-        <span class="d">Home</span>
-      </a>
-      <a class="entry" href="/website/about.html">
-        <span class="t">开盒 —— 关于我的全部情报</span>
-        <span class="d">About</span>
-      </a>
-      <a class="entry" href="/website/columns.html">
-        <span class="t">专栏 —— 计算机学习记录</span>
-        <span class="d">Notes</span>
-      </a>
-      <a class="entry" href="/website/diary.html">
-        <span class="t">日记 —— 没什么大事的日常</span>
-        <span class="d">Diary</span>
-      </a>
-      <a class="entry" href="/website/links.html">
-        <span class="t">链接 —— 我在的地方</span>
-        <span class="d">Links</span>
-      </a>
-    </div>
+    <h2>记录</h2>
 
-    <p class="err-code">404</p>
+    <article class="diary-item">
+      <div class="date">2026 / 09 / 11</div>
+      <h3>C语言入门：井字棋</h3>
+      <a href="/website/columns/260911">简单的游戏，简单的代码</a>
+    </article>
+
+    <!-- 添加笔记：
+         1. 复制 columns/260911.html 改名（同日多篇就加后缀，如 260911-2.html）
+         2. 在上面复制一个 <article class="diary-item">，改日期、标题、摘要和 <a href> -->
+
+    <p class="back-link"><a href="/website/columns.html">← 返回专栏</a></p>
 
   </main>
 
@@ -89,6 +76,5 @@
 
 <script src="/website/assets/main.js"></script>
 <script src="/website/assets/player.js"></script>
-
 </body>
 </html>

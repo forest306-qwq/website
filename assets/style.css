@@ -58,9 +58,11 @@ a{ color:inherit; text-decoration:none; }
   object-fit:cover;
   display:block;
   border:1px solid var(--line);
-  transition:transform .35s cubic-bezier(.2,.8,.2,1);
+  animation:avatar-spin 22s linear infinite;   /* 缓慢自转；不想要就把这行删掉 */
 }
-.brand:hover .avatar{ transform:rotate(-6deg) scale(1.04); }
+/* 鼠标移上去转快一点，像是被叫醒了一下 */
+.brand:hover .avatar{ animation-duration:3.5s; }
+@keyframes avatar-spin{ from{ transform:rotate(0deg); } to{ transform:rotate(360deg); } }
 
 .brand-name{ font-size:15px; font-weight:600; letter-spacing:.06em; white-space:nowrap; }
 .brand-sub{
@@ -324,6 +326,39 @@ code{
 .link-item .name{ flex:1; }
 .link-item:hover .ico{ color:var(--accent); }
 
+/* 专栏首页的分类条目 */
+.cat-item{
+  display:block;
+  padding:24px 0;
+  border-bottom:1px solid var(--line);
+  transition:padding-left .35s cubic-bezier(.2,.8,.2,1);
+}
+.cat-item:first-of-type{ border-top:1px solid var(--line); }
+.cat-item:hover{ padding-left:10px; }
+.cat-name{
+  display:block;
+  font-size:17px;
+  font-weight:600;
+  color:var(--ink);
+  transition:color .25s ease;
+}
+.cat-item:hover .cat-name{ color:var(--accent); }
+.cat-desc{
+  display:block;
+  margin-top:6px;
+  font-size:13.5px;
+  color:var(--sub);
+  line-height:1.8;
+}
+.cat-meta{
+  display:block;
+  margin-top:8px;
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
 /* 友链空位 */
 .friend-slot{
   margin-top:18px;
@@ -380,7 +415,6 @@ code{
   background:rgba(255,255,255,.94);
   border:1px solid var(--line);
   border-radius:999px;
-  overflow:hidden;
   user-select:none;
   transition:border-color .25s ease;
 }
@@ -399,6 +433,8 @@ code{
   text-transform:uppercase;
   color:var(--muted);
   cursor:pointer;
+  border-radius:999px 0 0 999px;   /* 圆角改到两端各自身上，胶囊本体不能再裁切，
+                                     否则飘出来的音符会被切掉 */
   transition:color .25s ease;
 }
 .np-toggle:hover{ color:var(--sub); }
@@ -437,11 +473,43 @@ code{
   align-items:center;
   padding:0 12px;
   border-left:1px solid var(--line);
+  border-radius:0 999px 999px 0;
   font-size:12px;
   color:var(--muted);
   transition:color .25s ease, background .25s ease;
 }
 .np-ext:hover{ color:var(--accent); background:#fafafa; }
+
+/* 播放时飘出来的透明音符 */
+.np-notes{
+  position:absolute;
+  left:16px;
+  bottom:10px;
+  width:0;
+  height:0;
+  pointer-events:none;
+}
+.np-notes i{
+  position:absolute;
+  bottom:0;
+  left:0;
+  font-style:normal;
+  font-size:15px;
+  line-height:1;
+  color:var(--accent);
+  opacity:0;
+  will-change:transform, opacity;
+}
+.now-playing[data-state="playing"] .np-notes i{
+  animation:np-note 3.6s cubic-bezier(.25,.6,.35,1) infinite;
+  animation-delay:var(--d, 0s);
+}
+@keyframes np-note{
+  0%   { opacity:0;   transform:translate(0, 8px) scale(.7) rotate(0deg); }
+  15%  { opacity:.55; }
+  55%  { opacity:.45; transform:translate(calc(var(--x, 12px) * .6), -34px) scale(1) rotate(calc(var(--r, 24deg) * .5)); }
+  100% { opacity:0;   transform:translate(var(--x, 12px), -72px) scale(1.06) rotate(var(--r, 24deg)); }
+}
 
 @keyframes np-pulse{ 0%,100%{opacity:1} 50%{opacity:.25} }
 
