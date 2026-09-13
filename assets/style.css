@@ -385,6 +385,88 @@ code{
 .giscus{ margin:6px 0 10px; }
 .giscus iframe{ width:100%; }
 
+/* ---------------- 实体专辑照片：2 × 2 ---------------- */
+
+.photo-grid{
+  display:grid;
+  grid-template-columns:repeat(2, 1fr);   /* 两列，四张图自然就是 2 × 2 */
+  gap:10px;
+  max-width:400px;                        /* 限宽，缩略图就不会占满整栏 */
+  margin:6px 0 26px;
+}
+.photo-grid a{
+  display:block;
+  overflow:hidden;
+  border:1px solid var(--line);
+  background:#fafafa;
+  transition:border-color .25s ease;
+}
+.photo-grid img{
+  display:block;
+  width:100%;
+  aspect-ratio:1 / 1;      /* 统一裁成正方形；想保留原比例就删掉这行和下一行 */
+  object-fit:cover;
+  transition:transform .45s cubic-bezier(.2,.8,.2,1);
+}
+.photo-grid a:hover{ border-color:#dcdcdc; }
+.photo-grid a:hover img{ transform:scale(1.02); }
+.photo-grid figcaption{
+  margin-top:8px;
+  font-size:12px;
+  color:var(--muted);
+  letter-spacing:.04em;
+}
+
+/* ---------------- 照片：页内放大浮层 ---------------- */
+
+body.lightbox-open{ overflow:hidden; }          /* 放大时锁住背景滚动 */
+
+.lightbox{
+  position:fixed;
+  inset:0;
+  z-index:60;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:5vw;
+  background:rgba(255,255,255,.94);
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .26s ease, visibility .26s ease;
+}
+.lightbox.on{ opacity:1; visibility:visible; }
+
+.lightbox img{
+  display:block;
+  max-width:min(100%, 820px);
+  max-height:76vh;                        /* 别糊满整屏，留点呼吸 */
+  border:1px solid var(--line);
+  box-shadow:0 26px 60px -34px rgba(0,0,0,.4);
+  transform:scale(.98);
+  transition:transform .3s cubic-bezier(.2,.8,.2,1);
+}
+.lightbox.on img{ transform:none; }
+
+.lightbox-close{
+  position:absolute;
+  top:18px;
+  right:20px;
+  width:36px;
+  height:36px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--line);
+  border-radius:50%;
+  background:#fff;
+  color:var(--muted);
+  font-size:16px;
+  line-height:1;
+  cursor:pointer;
+  transition:color .2s ease, border-color .2s ease;
+}
+.lightbox-close:hover{ color:var(--ink); border-color:#dcdcdc; }
+
 /* 小标签 */
 .tags{ display:flex; flex-wrap:wrap; gap:8px; margin:28px 0 0; padding:0; list-style:none; }
 .tags li{
