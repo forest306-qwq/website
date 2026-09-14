@@ -38,7 +38,7 @@
 
   function showMissing() {
     setState("error", "缺音频文件");
-    box.title = "把音乐文件放进 /website/assets/ 并命名为 for-river.mp3 就能播了";
+    box.title = "把音乐文件放进 assets/ 并命名为 for-river.mp3 就能播了";
   }
 
   function play() {

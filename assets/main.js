@@ -29,7 +29,7 @@
     if (href.indexOf("mailto:") === 0) return null;
     if (link.target === "_blank" || link.hasAttribute("download")) return null;
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return null;
-    if (href.indexOf("/website/") !== 0) return null;          // 只管本站路径
+    if (href.charAt(0) !== "/" || href.indexOf("//") === 0) return null;   // 只管站内绝对路径
 
     return href;
   }
@@ -39,22 +39,24 @@
      也能正确把「专栏」点亮，而不会同时点亮「主页」 */
 
   function highlight() {
-    var path = window.location.pathname;
+    var here = decodeURIComponent(window.location.pathname);
     var best = null;
     var bestLen = -1;
 
     var links = Array.prototype.slice.call(document.querySelectorAll(".nav-link"));
 
     links.forEach(function (a) {
-      var section = (a.getAttribute("href") || "")
-        .replace(/\.html$/, "")
-        .replace(/\/index$/, "");          // /website/columns
-      if (section === "") section = "/website";
+      // a.pathname 是浏览器解析好的绝对路径，
+      // 所以不管部署在根域名还是子目录，这里都不用改
+      var p = a.pathname || "";
+      var isHome = /\/index\.html$/.test(p) || p === "/";
+      var section = isHome ? "/" : p.replace(/\.html$/, "");
 
-      var hit = (path === section ||
-                 path === section + "/" ||
-                 path.indexOf(section + "/") === 0 ||
-                 path.indexOf(section + ".") === 0);   // /website/columns.html 这类
+      var hit = isHome
+        ? (here === "/" || /\/index\.html?$/.test(here))
+        : (here === section ||
+           here === section + ".html" ||
+           here.indexOf(section + "/") === 0);
 
       if (hit && section.length > bestLen) { best = a; bestLen = section.length; }
     });

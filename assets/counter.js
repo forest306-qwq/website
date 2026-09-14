@@ -56,11 +56,29 @@
     }
   }
 
+  /* ---------------- 兜底：确保数字真的显示出来 ---------------- */
+  /* 不蒜子的脚本在异常分支里会把容器设成 display:none
+     （站内换页时重复注入脚本，容易触发这个分支）
+     所以只要确认数字已经取到，就把它强制显示回来 */
+
+  function ensureVisible() {
+    ["site_pv", "site_uv"].forEach(function (key) {
+      var val = document.getElementById("busuanzi_value_" + key);
+      var box = document.getElementById("busuanzi_container_" + key);
+      if (!val || !box) return;
+      if (val.textContent.replace(/\s/g, "") && box.style.display === "none") {
+        box.style.display = "inline";
+      }
+    });
+  }
+
   /* ---------------- 跑起来 ---------------- */
 
   function refresh() {
     loadCounter();
     renderUptime();
+    // 数字是异步回来的，多查几次；稳态后每分钟查一次也无所谓
+    [400, 1200, 2500].forEach(function (ms) { setTimeout(ensureVisible, ms); });
   }
 
   // 换页之后 main.js 会调这个：重新取访问量 + 重算存活时间
