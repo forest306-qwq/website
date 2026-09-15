@@ -467,6 +467,28 @@ body.lightbox-open{ overflow:hidden; }          /* 放大时锁住背景滚动 *
 }
 .lightbox-close:hover{ color:var(--ink); border-color:#dcdcdc; }
 
+/* ---------------- 左下角装饰立绘 ---------------- */
+
+.marisa{
+  position:fixed;
+  left:-24px;                 /* 稍微切掉一点边，像是从屏幕外探进来 */
+  bottom:-12px;
+  height:min(40vh, 340px);    /* 想调大小改这里 */
+  width:auto;
+  opacity:.15;                /* 半透明程度 */
+  pointer-events:none;        /* 不挡点击 */
+  user-select:none;
+  z-index:0;
+}
+/* 让内容压在立绘上面 */
+.site-header,
+.layout{ position:relative; z-index:1; }
+
+/* 窄屏时收起来，免得挡住正文 */
+@media (max-width:900px){
+  .marisa{ display:none; }
+}
+
 /* 小标签 */
 .tags{ display:flex; flex-wrap:wrap; gap:8px; margin:28px 0 0; padding:0; list-style:none; }
 .tags li{
