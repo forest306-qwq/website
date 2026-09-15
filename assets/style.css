@@ -475,7 +475,7 @@ body.lightbox-open{ overflow:hidden; }          /* 放大时锁住背景滚动 *
   bottom:-12px;
   height:min(40vh, 340px);    /* 想调大小改这里 */
   width:auto;
-  opacity:.15;                /* 半透明程度 */
+  opacity:.32;                /* 半透明程度，越大越清楚 */
   pointer-events:none;        /* 不挡点击 */
   user-select:none;
   z-index:0;
@@ -487,6 +487,19 @@ body.lightbox-open{ overflow:hidden; }          /* 放大时锁住背景滚动 *
 /* 窄屏时收起来，免得挡住正文 */
 @media (max-width:900px){
   .marisa{ display:none; }
+}
+
+/* 日记里嵌的 B站外链播放器 */
+/* 不给 iframe 定尺寸的话，浏览器会按默认的 300×150 渲染，又小又挤 */
+.diary-item iframe{
+  display:block;
+  width:100%;
+  max-width:560px;
+  aspect-ratio:16 / 9;
+  height:auto;
+  margin:14px 0 6px;
+  border:1px solid var(--line);
+  background:#000;
 }
 
 /* 小标签 */
