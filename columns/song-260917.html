@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ハルノカゼ · Forest306</title>
+<meta name="description" content="每日一歌：ハルノカゼ">
+<link rel="icon" href="/assets/avatar.jpg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body data-anim="in">
+
+<header class="site-header">
+  <a class="brand" href="/index.html">
+    <img class="avatar" src="/assets/avatar.jpg" alt="头像">
+    <span>
+      <span class="brand-name">Forest306</span><br>
+      <span class="brand-sub">personal site</span>
+    </span>
+  </a>
+  <nav class="nav">
+    <a class="nav-link" href="/index.html">主页</a>
+    <a class="nav-link" href="/about.html">开盒</a>
+    <a class="nav-link is-active" href="/columns.html">专栏</a>
+    <a class="nav-link" href="/diary.html">日记</a>
+    <a class="nav-link" href="/links.html">链接</a>
+    <a class="nav-link" href="/guestbook.html">留言</a>
+  </nav>
+</header>
+
+<div class="layout single">
+
+  <main class="page prose">
+
+    <!-- 日期改这里 -->
+    <p class="eyebrow">专栏 / 每日一歌 / 2026-09-13</p>
+
+    <!-- 歌名 -->
+    <h1>たハルノカゼ</h1>
+
+    <!-- 开头那句，可删 -->
+    <p class="lead">淡然的哀伤</p>
+
+    <h2>信息</h2>
+    <dl class="facts">
+      <div class="row"><dt>艺人</dt><dd>Forest306</dd></div>
+      <div class="row"><dt>出自</dt><dd>专辑 ハルノカゼ</dd></div>
+      <div class="row"><dt>链接</dt>
+        <dd><a href="https://music.163.com/#/song?id=729467" target="_blank" rel="noopener">在网易云音乐听</a></dd>
+      </div>
+    </dl>
+
+    <!-- ===== 想说的（可自由增删小节） ===== -->
+    <h2>想说的</h2>
+    <p>
+      "春风若有怜花意"
+    </p>
+
+    <!-- ===== 实体专辑照片：四宫格 =====
+         把 4 张照片放进 assets/album/ 文件夹，文件名建议：
+           260913-1.jpg   260913-2.jpg   260913-3.jpg   260913-4.jpg
+         想换文件名就改下面的 src
+         想保留照片原始比例（不做正方形裁切），删掉 style.css 里
+         .photo-grid img 的 aspect-ratio 和 object-fit 两行即可
+         不需要点击看大图的话，把外层 <a> 去掉、只留 <img> 也行 -->
+    <h2>实体专辑</h2>
+    <div class="photo-grid">
+      <a href="https://cdn.jsdelivr.net/gh/forest306-qwq/website@main/assets/album/260913-1.jpg" target="_blank" rel="noopener">
+        <img src="https://cdn.jsdelivr.net/gh/forest306-qwq/website@main/assets/album/260913-1.jpg" alt="实体专辑照片 1" loading="lazy">
+      </a>
+      <a href="https://cdn.jsdelivr.net/gh/forest306-qwq/website@main/assets/album/260913-2.jpg" target="_blank" rel="noopener">
+        <img src="https://cdn.jsdelivr.net/gh/forest306-qwq/website@main/assets/album/260913-2.jpg" alt="实体专辑照片 2" loading="lazy">
+      </a>
+      <a href="https://cdn.jsdelivr.net/gh/forest306-qwq/website@main/assets/album/260913-3.jpg" target="_blank" rel="noopener">
+        <img src="https://cdn.jsdelivr.net/gh/forest306-qwq/website@main/assets/album/260913-3.jpg" alt="实体专辑照片 3" loading="lazy">
+      </a>
+      <a href="https://cdn.jsdelivr.net/gh/forest306-qwq/website@main/assets/album/260913-4.jpg" target="_blank" rel="noopener">
+        <img src="https://cdn.jsdelivr.net/gh/forest306-qwq/website@main/assets/album/260913-4.jpg" alt="实体专辑照片 4" loading="lazy">
+      </a>
+    </div>
+
+    <!-- 想插歌词或引用，可以用 <pre><code>…</code></pre> 或者普通段落 -->
+
+    <!-- 返回链接，建议留着 -->
+    <p class="back-link"><a href="/columns/song.html">← 返回每日一歌</a></p>
+
+  </main>
+
+  <footer class="site-footer">
+  © 2026 Forest306
+  <span class="uptime" data-start="2026-09-10T21:40:00+08:00">运行 <span id="site-uptime">–</span></span>
+  <span class="visit">
+    <span id="busuanzi_container_site_pv">访问 <span class="num" id="busuanzi_value_site_pv"></span> 次</span>
+    <span id="busuanzi_container_site_uv">访客 <span class="num" id="busuanzi_value_site_uv"></span> 人</span>
+  </span>
+  </footer>
+
+</div>
+
+<!-- 左下角装饰立绘（半透明，不可点击） -->
+<img class="marisa" src="https://cdn.jsdelivr.net/gh/forest306-qwq/website@main/assets/marisa.png" alt="" aria-hidden="true">
+
+<!-- 右下角：背景音乐（点一下播放 / 暂停，↗ 去网易云） -->
+<audio id="bgm" src="/assets/for-river.mp3" preload="metadata" loop></audio>
+
+<div class="now-playing" id="nowPlaying" data-state="ready">
+  <button class="np-toggle" type="button" aria-label="播放或暂停背景音乐">
+    <span class="dot"></span>
+    <span class="label">点击播放</span>
+    <span class="title">For River</span>
+  </button>
+  <a class="np-ext"
+     href="https://music.163.com/#/song?id=1645112"
+     target="_blank" rel="noopener"
+     title="在网易云音乐打开">↗</a>
+</div>
+
+<script src="/assets/main.js"></script>
+<script src="/assets/player.js"></script>
+<script src="/assets/counter.js"></script>
+<script src="/assets/lightbox.js"></script>
+</body>
+</html>
