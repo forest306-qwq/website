@@ -11,12 +11,14 @@
   var box   = document.getElementById("nowPlaying");
   if (!audio || !box) return;
 
+  var toggle = box.querySelector(".np-toggle");
   var label = box.querySelector(".label");
 
   /* -------- 播放时飘出来的透明音符 -------- */
   (function buildNotes() {
     var wrap = document.createElement("span");
     wrap.className = "np-notes";
+    wrap.setAttribute("aria-hidden", "true");
     var glyphs = ["\u266a", "\u266b", "\u2669", "\u266c"];   // ♪ ♫ ♩ ♬
 
     for (var i = 0; i < 5; i++) {
@@ -33,12 +35,14 @@
 
   function setState(state, text) {
     box.dataset.state = state;
+    toggle.setAttribute("aria-pressed", state === "playing" ? "true" : "false");
+    toggle.setAttribute("aria-label", state === "playing" ? "暂停背景音乐" : "播放背景音乐");
     if (label && text) label.textContent = text;
   }
 
   function showMissing() {
-    setState("error", "缺音频文件");
-    box.title = "把音乐文件放进 assets/ 并命名为 for-river.mp3 就能播了";
+    setState("error", "暂时无法播放");
+    box.title = "音乐暂时无法播放，可以通过右侧链接收听";
   }
 
   function play() {
@@ -61,10 +65,13 @@
   }
 
   /* 点胶囊：播放 / 暂停 */
-  box.addEventListener("click", function (e) {
+  toggle.addEventListener("click", function (e) {
     if (e.target.closest(".np-ext")) return;   // ↗ 是外链，交给浏览器
     if (audio.paused) play(); else pause();
   });
+
+  audio.addEventListener("play", function () { setState("playing", "正在听"); });
+  audio.addEventListener("pause", function () { setState("paused", "点击播放"); });
 
   /* 音乐自然播完（单曲循环时不会触发）后回到可点状态 */
   audio.addEventListener("ended", function () { setState("paused", "点击播放"); });

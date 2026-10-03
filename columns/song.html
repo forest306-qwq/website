@@ -9,19 +9,21 @@
 <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body data-anim="in">
+<a class="skip-link" href="#main-content">跳到正文</a>
+<p id="navigation-status" class="sr-only" role="status" aria-live="polite"></p>
 
 <header class="site-header">
   <a class="brand" href="/index.html">
-    <img class="avatar" src="/assets/avatar.jpg" alt="头像">
+    <img class="avatar" src="/assets/avatar.jpg" alt="头像" width="34" height="34" decoding="async">
     <span>
       <span class="brand-name">Forest306</span><br>
       <span class="brand-sub">personal site</span>
     </span>
   </a>
-  <nav class="nav">
+  <nav class="nav" aria-label="主要导航">
     <a class="nav-link" href="/index.html">主页</a>
     <a class="nav-link" href="/about.html">开盒</a>
-    <a class="nav-link is-active" href="/columns.html">专栏</a>
+    <a class="nav-link is-active" aria-current="page" href="/columns.html">专栏</a>
     <a class="nav-link" href="/diary.html">日记</a>
     <a class="nav-link" href="/links.html">链接</a>
     <a class="nav-link" href="/guestbook.html">留言</a>
@@ -30,7 +32,7 @@
 
 <div class="layout single">
 
-  <main class="page">
+  <main class="page" id="main-content" tabindex="-1">
 
     <p class="eyebrow">Columns / 每日一歌</p>
     <h1>每日一歌</h1>
@@ -39,30 +41,36 @@
     </p>
 
     <h2>歌单</h2>
+    <!-- AUTO:SONG-LIST:START -->
     <article class="diary-item">
-      <div class="date">2026 / 09 / 17</div>
-      <h3>ハルノカゼ</h3>
-      <a href="/columns/song-260917.html">春风</a>
+      <div class="date"><time datetime="2026-10-03">2026 / 10 / 03</time></div>
+      <h3><a href="/columns/song-261003.html">月の眷属达</a></h3>
+      <a href="/columns/song-262003.html">静夜下的空灵</a>
     </article>
     <article class="diary-item">
-      <div class="date">2026 / 09 / 13</div>
-      <h3>ただいま/おかえり</h3>
-      <a href="/columns/song-260913.html">高三的精神慰藉</a>
-    </article>
-    <article class="diary-item">
-      <div class="date">2026 / 09 / 12</div>
-      <h3>Caravan</h3>
-      <a href="/columns/song-260912.html">很久之前便耳熟能详</a>
-    </article>
-    <article class="diary-item">
-      <div class="date">2026 / 09 / 11</div>
-      <h3>For River (Johnny's Version)</h3>
-      <a href="/columns/song-260911.html">玩游戏时的bgm</a>
+      <div class="date"><time datetime="2026-09-17">2026 / 09 / 17</time></div>
+      <h3><a href="/columns/song-260917.html">ハルノカゼ</a></h3>
+      <a href="/columns/song-260917.html">淡然的哀伤</a>
     </article>
 
-    <!-- 添加一首：
-         1. 复制 columns/song-260912.html 改名成 song-年月日.html
-         2. 在上面复制一个 <article class="diary-item">，改日期、歌名、一句描述 -->
+    <article class="diary-item">
+      <div class="date"><time datetime="2026-09-13">2026 / 09 / 13</time></div>
+      <h3><a href="/columns/song-260913.html">ただいま/おかえり</a></h3>
+      <a href="/columns/song-260913.html">黄昏</a>
+    </article>
+
+    <article class="diary-item">
+      <div class="date"><time datetime="2026-09-12">2026 / 09 / 12</time></div>
+      <h3><a href="/columns/song-260912.html">Caravan</a></h3>
+      <a href="/columns/song-260912.html">蓝天白云下的宁静</a>
+    </article>
+
+    <article class="diary-item">
+      <div class="date"><time datetime="2026-09-11">2026 / 09 / 11</time></div>
+      <h3><a href="/columns/song-260911.html">For River (Johnny&#x27;s Version)</a></h3>
+      <a href="/columns/song-260911.html">站子右下角一直在放的就是这首</a>
+    </article>
+    <!-- AUTO:SONG-LIST:END -->
 
     <p class="back-link"><a href="/columns.html">← 返回专栏</a></p>
 
@@ -80,13 +88,13 @@
 </div>
 
 <!-- 左下角装饰立绘（半透明，不可点击） -->
-<img class="marisa" src="https://cdn.jsdelivr.net/gh/forest306-qwq/website@main/assets/marisa.png" alt="" aria-hidden="true">
+<img class="marisa" src="/assets/marisa.png" decoding="async" alt="" aria-hidden="true">
 
 <!-- 右下角：背景音乐（点一下播放 / 暂停，↗ 去网易云） -->
-<audio id="bgm" src="/assets/for-river.mp3" preload="metadata" loop></audio>
+<audio id="bgm" src="/assets/for-river.mp3" preload="none" loop></audio>
 
 <div class="now-playing" id="nowPlaying" data-state="ready">
-  <button class="np-toggle" type="button" aria-label="播放或暂停背景音乐">
+  <button class="np-toggle" type="button" aria-label="播放背景音乐" aria-pressed="false">
     <span class="dot"></span>
     <span class="label">点击播放</span>
     <span class="title">For River</span>
@@ -94,11 +102,12 @@
   <a class="np-ext"
      href="https://music.163.com/#/song?id=1645112"
      target="_blank" rel="noopener"
-     title="在网易云音乐打开">↗</a>
+     title="在网易云音乐打开" aria-label="在网易云音乐收听 For River（新窗口）">↗</a>
 </div>
 
-<script src="/assets/main.js"></script>
-<script src="/assets/player.js"></script>
-<script src="/assets/counter.js"></script>
+<script src="/assets/main.js" defer></script>
+<script src="/assets/player.js" defer></script>
+<script src="/assets/counter.js" defer></script>
+<script src="/assets/lightbox.js" defer></script>
 </body>
 </html>

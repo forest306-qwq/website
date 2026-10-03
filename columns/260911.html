@@ -3,25 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>实例 · Forest306</title>
+<title>C语言入门：井字棋 · Forest306</title>
 <meta name="description" content="Forest306 的计算机学习记录">
 <link rel="icon" href="/assets/avatar.jpg">
 <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body data-anim="in">
+<a class="skip-link" href="#main-content">跳到正文</a>
+<p id="navigation-status" class="sr-only" role="status" aria-live="polite"></p>
 
 <header class="site-header">
   <a class="brand" href="/index.html">
-    <img class="avatar" src="/assets/avatar.jpg" alt="头像">
+    <img class="avatar" src="/assets/avatar.jpg" alt="头像" width="34" height="34" decoding="async">
     <span>
       <span class="brand-name">Forest306</span><br>
       <span class="brand-sub">personal site</span>
     </span>
   </a>
-  <nav class="nav">
+  <nav class="nav" aria-label="主要导航">
     <a class="nav-link" href="/index.html">主页</a>
     <a class="nav-link" href="/about.html">开盒</a>
-    <a class="nav-link is-active" href="/columns.html">专栏</a>
+    <a class="nav-link is-active" aria-current="page" href="/columns.html">专栏</a>
     <a class="nav-link" href="/diary.html">日记</a>
     <a class="nav-link" href="/links.html">链接</a>
     <a class="nav-link" href="/guestbook.html">留言</a>
@@ -30,19 +32,19 @@
 
 <div class="layout single">
 
-  <main class="page prose">
+  <main class="page prose" id="main-content" tabindex="-1">
 
     <!-- 日期改这里 -->
     <p class="eyebrow">专栏 / 2026-09-11</p>
 
     <!-- 标题 -->
-    <h1>C语言入门</h1>
+    <h1>C语言入门：井字棋</h1>
 
     <!-- 开头那句话，可删 -->
     <p class="lead">简单的井字棋程序</p>
 
     <!-- ===== 一个小节 ===== 想加就整块复制，改标题和正文 -->
-    <h2>原码</h2>
+    <h2>源码</h2>
     <p>
       以红绿区分双方，通过输入坐标来确定下棋位置，率先连成三子为胜
     </p>
@@ -50,8 +52,8 @@
     <!-- ===== 代码块（不用就整块删掉） ===== -->
 <pre><code>
 
-#include <stdio.h>
-#include <stdlib.h>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
 #define ROW 3
 #define COL 3
 #define STEP_MAX 9
@@ -62,9 +64,9 @@
 int count = 0;
 void reset_board(char arr[ROW][COL],int r,int c)
 {
-    for(int i = 0;i < r;i ++)
+    for(int i = 0;i &lt; r;i ++)
     {
-        for(int j = 0;j < c;j ++)
+        for(int j = 0;j &lt; c;j ++)
         {
             arr[i][j] = '*';
         }
@@ -73,10 +75,10 @@ void reset_board(char arr[ROW][COL],int r,int c)
 void display_board(char arr[ROW][COL],int r,int c)
 {
     printf("  0 1 2\n");
-    for(int i = 0;i < r;i ++)
+    for(int i = 0;i &lt; r;i ++)
     {
         printf("%d ",i);
-        for(int j = 0;j < c;j ++)
+        for(int j = 0;j &lt; c;j ++)
         {
            
             switch(arr[i][j])
@@ -97,16 +99,16 @@ void display_board(char arr[ROW][COL],int r,int c)
 }
 int over_examine(char arr[ROW][COL],int x, int y)
 {
-    if((arr[0][0] == arr[0][1] && arr[0][1] == arr[0][2] && arr[0][1] != '*') ||
-       (arr[1][0] == arr[1][1] && arr[1][1] == arr[1][2] && arr[1][1] != '*') ||
-       (arr[2][0] == arr[2][1] && arr[2][1] == arr[2][2] && arr[2][1] != '*') ||
+    if((arr[0][0] == arr[0][1] &amp;&amp; arr[0][1] == arr[0][2] &amp;&amp; arr[0][1] != '*') ||
+       (arr[1][0] == arr[1][1] &amp;&amp; arr[1][1] == arr[1][2] &amp;&amp; arr[1][1] != '*') ||
+       (arr[2][0] == arr[2][1] &amp;&amp; arr[2][1] == arr[2][2] &amp;&amp; arr[2][1] != '*') ||
        // 列
-       (arr[0][0] == arr[1][0] && arr[1][0] == arr[2][0] && arr[1][0] != '*') ||
-       (arr[0][1] == arr[1][1] && arr[1][1] == arr[2][1] && arr[1][1] != '*') ||
-       (arr[0][2] == arr[1][2] && arr[1][2] == arr[2][2] && arr[1][2] != '*') ||
+       (arr[0][0] == arr[1][0] &amp;&amp; arr[1][0] == arr[2][0] &amp;&amp; arr[1][0] != '*') ||
+       (arr[0][1] == arr[1][1] &amp;&amp; arr[1][1] == arr[2][1] &amp;&amp; arr[1][1] != '*') ||
+       (arr[0][2] == arr[1][2] &amp;&amp; arr[1][2] == arr[2][2] &amp;&amp; arr[1][2] != '*') ||
        // 对角线
-       (arr[0][0] == arr[1][1] && arr[1][1] == arr[2][2] && arr[1][1] != '*') ||
-       (arr[0][2] == arr[1][1] && arr[1][1] == arr[2][0] && arr[1][1] != '*'))
+       (arr[0][0] == arr[1][1] &amp;&amp; arr[1][1] == arr[2][2] &amp;&amp; arr[1][1] != '*') ||
+       (arr[0][2] == arr[1][1] &amp;&amp; arr[1][1] == arr[2][0] &amp;&amp; arr[1][1] != '*'))
      {
         if(count % 2 ==1)
             return 2;//红方胜利
@@ -136,8 +138,8 @@ int main()
         {
         x = -1,y = -1;
         printf("输入对应坐标:");
-        scanf("%d %d",&x,&y);
-        if((x == 0 ||x == 1||x == 2) && (y == 0||y == 1|| y ==2)&&(board[x][y] != 'O')&&(board[x][y] != 'X'))
+        scanf("%d %d",&amp;x,&amp;y);
+        if((x == 0 ||x == 1||x == 2) &amp;&amp; (y == 0||y == 1|| y ==2)&amp;&amp;(board[x][y] != 'O')&amp;&amp;(board[x][y] != 'X'))
             {
                 count++;
                 break;
@@ -150,9 +152,9 @@ int main()
         else
             board[x][y] = 'X';
         
-        if(count >= STEP_MIN && count <= STEP_MAX)
+        if(count &gt;= STEP_MIN &amp;&amp; count &lt;= STEP_MAX)
             game_over_num = over_examine(board,r,c);
-        if(count <= STEP_MAX)
+        if(count &lt;= STEP_MAX)
         {
             if(game_over_num == 1)
                 continue;
@@ -192,7 +194,7 @@ int main()
       <li>输入坐标时缺少对应提示（实则是我懒得写了</li>
     </ul>
     <br>      
-    <a href="/columns/260911.exe">/*点击下载编译后程序*/</a>
+    <a href="/columns/260911.exe" download>下载井字棋程序（Windows）</a>
 
     <br>
     <p class="back-link"><a href="/columns.html">← 返回专栏</a></p>
@@ -211,13 +213,13 @@ int main()
 </div>
 
 <!-- 左下角装饰立绘（半透明，不可点击） -->
-<img class="marisa" src="https://cdn.jsdelivr.net/gh/forest306-qwq/website@main/assets/marisa.png" alt="" aria-hidden="true">
+<img class="marisa" src="/assets/marisa.png" decoding="async" alt="" aria-hidden="true">
 
 <!-- 右下角：背景音乐（点一下播放 / 暂停，↗ 去网易云） -->
-<audio id="bgm" src="/assets/for-river.mp3" preload="metadata" loop></audio>
+<audio id="bgm" src="/assets/for-river.mp3" preload="none" loop></audio>
 
 <div class="now-playing" id="nowPlaying" data-state="ready">
-  <button class="np-toggle" type="button" aria-label="播放或暂停背景音乐">
+  <button class="np-toggle" type="button" aria-label="播放背景音乐" aria-pressed="false">
     <span class="dot"></span>
     <span class="label">点击播放</span>
     <span class="title">For River</span>
@@ -225,12 +227,13 @@ int main()
   <a class="np-ext"
      href="https://music.163.com/#/song?id=1645112"
      target="_blank" rel="noopener"
-     title="在网易云音乐打开">↗</a>
+     title="在网易云音乐打开" aria-label="在网易云音乐收听 For River（新窗口）">↗</a>
 </div>
 
-<script src="/assets/main.js"></script>
-<script src="/assets/player.js"></script>
-<script src="/assets/counter.js"></script>
+<script src="/assets/main.js" defer></script>
+<script src="/assets/player.js" defer></script>
+<script src="/assets/counter.js" defer></script>
 
+<script src="/assets/lightbox.js" defer></script>
 </body>
 </html>

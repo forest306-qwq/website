@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>单链表：创建、遍历与释放 · Forest306</title>
+<meta name="description" content="C 语言单链表练习：尾插法创建节点、遍历链表、分配失败处理与内存释放，附完整源码和运行结果。">
+<link rel="icon" href="/assets/avatar.jpg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body data-anim="in">
+<a class="skip-link" href="#main-content">跳到正文</a>
+<p id="navigation-status" class="sr-only" role="status" aria-live="polite"></p>
+
+<header class="site-header">
+  <a class="brand" href="/index.html">
+    <img class="avatar" src="/assets/avatar.jpg" alt="头像" width="34" height="34" decoding="async">
+    <span>
+      <span class="brand-name">Forest306</span><br>
+      <span class="brand-sub">personal site</span>
+    </span>
+  </a>
+  <nav class="nav" aria-label="主要导航">
+    <a class="nav-link" href="/index.html">主页</a>
+    <a class="nav-link" href="/about.html">开盒</a>
+    <a class="nav-link is-active" aria-current="page" href="/columns.html">专栏</a>
+    <a class="nav-link" href="/diary.html">日记</a>
+    <a class="nav-link" href="/links.html">链接</a>
+    <a class="nav-link" href="/guestbook.html">留言</a>
+  </nav>
+</header>
+
+<div class="layout single">
+
+  <main class="page prose" id="main-content" tabindex="-1">
+    <p class="eyebrow">计算机学习 / <time datetime="2026-10-03">2026-10-03</time></p>
+    <h1>单链表：创建、遍历与插入</h1>
+    <p class="lead">把一个个节点连起来，再顺着 next 走到最后。</p>
+
+    <p>初步接触链表，通过指针完成各结构体的连接</p>
+    <p>对我而言，这是一个比较新奇的事物，也是我在学习了指针相关知识后的一次应用</p>
+    <p>此外，学习链表之前还需要掌握结构体和动态内存的相关知识</p>
+    <p>结构体学习了大致的使用方式，动态内存才学会malloc和calloc(我甚至连free都不会。。)</p>
+    <ul>
+      <li>用 <code>struct Node</code> 把数据和下一个节点的指针放在一起。</li>
+      <li>用 <code>head</code> 记住链表起点，用 <code>tail</code> 记住末尾节点。</li>
+      <li>用尾插法添加节点，沿着 <code>next</code> 遍历整条链表。</li>
+      <li>使用完毕后释放节点，避免分配的内存一直保留。</li>
+    </ul>
+    <br>
+  
+
+    <h2>完整代码</h2>
+    <pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+struct Node{
+    int data;
+    struct Node* next;
+};
+
+struct Node* Node_create(int n){
+    struct Node* head = (struct Node*)malloc(sizeof(struct Node));
+    head-&gt;data = 1;
+    head-&gt;next = NULL;
+    struct Node* tail = head;
+    for(int i = 2;i &lt;= n;i++)
+    {
+        struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+        newNode-&gt;data = i;
+        newNode-&gt;next = NULL;
+        tail-&gt;next = newNode;
+        tail = newNode;
+    }
+    return head;
+}
+
+void Node_insert(int position,int value,struct Node* head){
+    struct Node* traverse = head;
+    int count = 0;
+    struct Node* left_pointer = NULL;
+    struct Node* right_pointer = NULL;
+    
+
+    while(traverse != NULL)
+    {
+        traverse = traverse-&gt;next;
+        count++;
+        if(count == position - 2)
+        left_pointer = traverse;
+        if(count == position - 1)
+        right_pointer = traverse;
+    }
+
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode-&gt;data = value;
+    newNode-&gt;next = right_pointer;
+    left_pointer-&gt;next = newNode;
+}
+struct Node* traverse(struct Node* head){
+    printf("链表内容:");
+    struct Node* traverse_pointer = head;
+    while(traverse_pointer != NULL){
+        printf("%d ",traverse_pointer-&gt;data);
+        traverse_pointer = traverse_pointer-&gt;next;
+    }
+    return traverse_pointer;
+} 
+
+
+int main(void){
+    struct Node* head = Node_create(6);
+    Node_insert(4,5,head);
+    traverse(head);
+    return 0;
+}</code></pre>
+
+    <p><a href="/columns/node_insert.c" download>下载完整 C 源码</a></p>
+
+    <h2>运行结果</h2>
+    <code>1 2 3 5 4 5 6</code>
+    <p>其中positon = 4的位置为插入结果，value = 5</p>
+
+    <h2>创建链表的尾插法里最关键的两行</h2>
+    <p>已有尾节点时，先把新节点接到尾部，再更新尾指针：</p>
+    <pre><code class="language-c">tail-&gt;next = newNode;
+tail = newNode;</code></pre>
+    <p>第一行改变的是节点之间的连接，第二行改变的是 <code>tail</code> 指向的位置。如果写成 <code>newNode = tail</code>，只是让局部变量指向旧尾节点，尾指针并没有推进。</p>
+    <p>链表为空时还没有尾节点，所以第一个节点需要单独赋给 <code>head</code>，之后再按同样的方式更新 <code>tail</code>。</p>
+
+    <h2>遍历与内存插入</h2>
+    <p>遍历时使用单独的 <code>traverse_pointer</code> 向后移动，保留原来的 <code>head</code>。遍历函数只负责打印，不需要返回走到末尾后的空指针,可以使用const修饰，说明其不会改变内容
+    <p>插入时使用了指针left_positon和right_positon，两者可以把新插入的结构体串起来，达到插入的效果</p>
+    <p>此外，插入代码存在缺陷，只能插入position>=2的位置，这是一个后续的修改方向</p>
+
+    <h2>边界与验证</h2>
+      <p>理论上应该有的，但我懒得搞233</p>
+
+   
+
+    <p class="back-link"><a href="/columns/code.html">← 返回计算机学习</a></p>
+
+  </main>
+
+  <footer class="site-footer">
+  © 2026 Forest306
+  <span class="uptime" data-start="2026-09-10T21:40:00+08:00">运行 <span id="site-uptime">–</span></span>
+  <span class="visit">
+    <span id="busuanzi_container_site_pv">访问 <span class="num" id="busuanzi_value_site_pv"></span> 次</span>
+    <span id="busuanzi_container_site_uv">访客 <span class="num" id="busuanzi_value_site_uv"></span> 人</span>
+  </span>
+  </footer>
+
+</div>
+
+<!-- 左下角装饰立绘（半透明，不可点击） -->
+<img class="marisa" src="/assets/marisa.png" decoding="async" alt="" aria-hidden="true">
+
+<!-- 右下角：背景音乐（点一下播放 / 暂停，↗ 去网易云） -->
+<audio id="bgm" src="/assets/for-river.mp3" preload="none" loop></audio>
+
+<div class="now-playing" id="nowPlaying" data-state="ready">
+  <button class="np-toggle" type="button" aria-label="播放背景音乐" aria-pressed="false">
+    <span class="dot"></span>
+    <span class="label">点击播放</span>
+    <span class="title">For River</span>
+  </button>
+  <a class="np-ext"
+     href="https://music.163.com/#/song?id=1645112"
+     target="_blank" rel="noopener"
+     title="在网易云音乐打开" aria-label="在网易云音乐收听 For River（新窗口）">↗</a>
+</div>
+
+<script src="/assets/main.js" defer></script>
+<script src="/assets/player.js" defer></script>
+<script src="/assets/counter.js" defer></script>
+
+<script src="/assets/lightbox.js" defer></script>
+</body>
+</html>

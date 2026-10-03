@@ -1,75 +1,56 @@
-/* ===========================================================
-   Forest306 · 照片页内放大  —  lightbox.js
-   点四宫格里的照片 → 当前页浮层放大，不跳新标签页
-   规则：
-     · 用事件委托绑在 document 上，所以站内换页之后依然有效
-     · 浮层挂在 <body> 下（在 .layout 之外），换页不会被清掉
-     · <a href> 保留着，禁用 JS 或中键点击时仍能打开原图
-   =========================================================== */
-
 (function () {
-  "use strict";
-
-  var TRANS_MS = 300;
-  var box = null, imgEl = null;
-
+  'use strict';
+  var box, image, closeButton, opener;
+  var background = [];
+  var shown = false;
   function build() {
-    box = document.createElement("div");
-    box.className = "lightbox";
-    box.setAttribute("role", "dialog");
-    box.setAttribute("aria-modal", "true");
-    box.innerHTML =
-      '<button class="lightbox-close" type="button" aria-label="\u5173\u95ed">\u00d7</button>' +
-      '<img alt="">';
-
-    // 点浮层空白处或关闭按钮都关掉；点图片本身不关
-    box.addEventListener("click", function (e) {
-      if (e.target === imgEl) return;
-      close();
-    });
-
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" || e.keyCode === 27) close();
-    });
-
+    box = document.createElement('div');
+    box.className = 'lightbox';
+    box.setAttribute('role', 'dialog');
+    box.setAttribute('aria-modal', 'true');
+    box.setAttribute('aria-label', '照片预览');
+    box.setAttribute('aria-hidden', 'true');
+    box.innerHTML = '<button class="lightbox-close" type="button" aria-label="关闭照片预览">×</button><img alt="">';
     document.body.appendChild(box);
-    imgEl = box.querySelector("img");
+    image = box.querySelector('img');
+    closeButton = box.querySelector('button');
+    box.addEventListener('click', function (event) { if (event.target !== image) close(); });
   }
-
-  function open(src, alt) {
+  function open(link, thumbnail) {
     if (!box) build();
-
-    imgEl.src = src;
-    imgEl.alt = alt || "";
-
-    document.body.classList.add("lightbox-open");
-    // 下一帧再加 on，过渡动画才会跑起来
-    requestAnimationFrame(function () { box.classList.add("on"); });
+    opener = link;
+    image.src = link.href;
+    image.alt = thumbnail.alt;
+    shown = true;
+    background = Array.from(document.body.children).filter(function (el) { return el !== box && el.tagName !== 'SCRIPT'; });
+    background = background.map(function (el) { var wasInert = el.inert; el.inert = true; return { el: el, wasInert: wasInert }; });
+    box.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('lightbox-open');
+    box.classList.add('on');
+    closeButton.focus();
   }
-
   function close() {
-    if (!box || !box.classList.contains("on")) return;
-
-    box.classList.remove("on");
-    document.body.classList.remove("lightbox-open");
-
-    // 动画结束后撤掉 src，免得下次打开先闪一下旧图
-    setTimeout(function () {
-      if (box && !box.classList.contains("on")) imgEl.removeAttribute("src");
-    }, TRANS_MS + 20);
+    if (!shown) return;
+    shown = false;
+    box.classList.remove('on');
+    box.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('lightbox-open');
+    background.forEach(function (item) { item.el.inert = item.wasInert; });
+    background = [];
+    if (opener && opener.isConnected) opener.focus({ preventScroll: true });
+    setTimeout(function () { if (!shown) image.removeAttribute('src'); }, 300);
   }
-
-  /* 只接管「照片网格」里的链接 */
-  document.addEventListener("click", function (e) {
-    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;   // 让用户还能中键/新窗口打开
-
-    var link = e.target.closest ? e.target.closest(".photo-grid a") : null;
-    if (!link) return;
-
-    var im = link.querySelector("img");
-    if (!im) return;
-
-    e.preventDefault();
-    open(link.getAttribute("href") || im.currentSrc || im.src, im.getAttribute("alt"));
+  document.addEventListener('click', function (event) {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    var link = event.target.closest('.photo-grid a');
+    if (!link || !link.querySelector('img')) return;
+    event.preventDefault();
+    open(link, link.querySelector('img'));
   });
+  document.addEventListener('keydown', function (event) {
+    if (!shown) return;
+    if (event.key === 'Escape') { event.preventDefault(); close(); }
+    if (event.key === 'Tab') { event.preventDefault(); closeButton.focus(); }
+  });
+  document.addEventListener('site:before-navigate', close);
 })();

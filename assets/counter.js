@@ -15,6 +15,7 @@
   /* ---------------- 访问量 ---------------- */
 
   function loadCounter() {
+    if (["localhost", "127.0.0.1", ""].indexOf(location.hostname) !== -1) return;
     var old = document.getElementById("bsz-script");
     if (old && old.parentNode) old.parentNode.removeChild(old);
 
@@ -66,7 +67,7 @@
       var val = document.getElementById("busuanzi_value_" + key);
       var box = document.getElementById("busuanzi_container_" + key);
       if (!val || !box) return;
-      if (val.textContent.replace(/\s/g, "") && box.style.display === "none") {
+      if (/^\d+$/.test(val.textContent.trim())) {
         box.style.display = "inline";
       }
     });

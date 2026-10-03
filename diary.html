@@ -9,20 +9,22 @@
 <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body data-anim="in">
+<a class="skip-link" href="#main-content">跳到正文</a>
+<p id="navigation-status" class="sr-only" role="status" aria-live="polite"></p>
 
 <header class="site-header">
   <a class="brand" href="/index.html">
-    <img class="avatar" src="/assets/avatar.jpg" alt="头像">
+    <img class="avatar" src="/assets/avatar.jpg" alt="头像" width="34" height="34" decoding="async">
     <span>
       <span class="brand-name">Forest306</span><br>
       <span class="brand-sub">personal site</span>
     </span>
   </a>
-  <nav class="nav">
+  <nav class="nav" aria-label="主要导航">
     <a class="nav-link" href="/index.html">主页</a>
     <a class="nav-link" href="/about.html">开盒</a>
     <a class="nav-link" href="/columns.html">专栏</a>
-    <a class="nav-link is-active" href="/diary.html">日记</a>
+    <a class="nav-link is-active" aria-current="page" href="/diary.html">日记</a>
     <a class="nav-link" href="/links.html">链接</a>
     <a class="nav-link" href="/guestbook.html">留言</a>
   </nav>
@@ -30,53 +32,60 @@
 
 <div class="layout single">
 
-  <main class="page">
+  <main class="page" id="main-content" tabindex="-1">
 
     <p class="eyebrow">Diary</p>
     <h1>没什么大事的日常</h1>
     <p class="lead">有心情就写，没心情就先放着</p>
 
     <h2>记录</h2>
-    <article class="diary-item">
+    <article class="diary-item" id="diary-2026-10-03">
+      <div class="date">2026 / 10 / 03</div>
+      <h3>国庆假日第一天</h3>
+      <p>昨天历经了12小时的硬座，今天是第一个完整的国庆假日</p>
+      <p>过的还是很舒服的</p>
+    </article>
+    <article class="diary-item" id="diary-2026-09-21">
       <div class="date">2026 / 09 / 21</div>
       <h3>好久没更新了</h3>
       <p>一方面是因为懒，另一方面是确实没啥事</p>
     </article>
-    <article class="diary-item">
+    <article class="diary-item" id="diary-2026-09-17">
       <div class="date">2026 / 09 / 17</div>
       <h3>第一天</h3>
       <p>陌生的城市，陌生的环境，陌生的人</p>
     </article>
-    <article class="diary-item">
+    <article class="diary-item" id="diary-2026-09-16">
       <div class="date">2026 / 09 / 16</div>
       <h3>暑假，结束了</h3>
       <p>事比较多，其他部分之后再更</p>
-<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=117149175652175&bvid=BV1YY8v6aEuQ&cid=41213692333&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=117149175652175&bvid=BV1YY8v6aEuQ&cid=41213692333&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy" title="视频播放器"></iframe>
+<p class="video-fallback"><a href="https://www.bilibili.com/video/BV1YY8v6aEuQ/" target="_blank" rel="noopener">播放器加载失败时，可在哔哩哔哩打开视频 ↗</a></p>
     </article>
-    <article class="diary-item">
+    <article class="diary-item" id="diary-2026-09-15">
       <div class="date">2026 / 09 / 15</div>
       <h3>离开六安前的最后一晚</h3>
       <p>电脑掉网一整天了，今天下午才修好</p>
     </article>
-    <article class="diary-item">
+    <article class="diary-item" id="diary-2026-09-13">
       <div class="date">2026 / 09 / 13</div>
       <h3>开学前的无所事事2</h3>
       <p>打了一天游戏了</p>
     </article>
-      <article class="diary-item">
+      <article class="diary-item" id="diary-2026-09-12">
       <div class="date">2026 / 09 / 12</div>
       <h3>开学前的无所事事</h3>
       <p>每天都在对着网站修修补补</p>
     </article>
 
-    <article class="diary-item">
+    <article class="diary-item" id="diary-2026-09-11">
       <div class="date">2026 / 09 / 11</div>
       <h3>没拿到大一上的四级名额</h3>
       <p>本来有点难过的</p>
       <p>但是高中的同学好像都没拿到</p>
       <p>突然觉得也可以接受了（对不起qwq</p>
     </article>
-    <article class="diary-item">
+    <article class="diary-item" id="diary-2026-09-10">
       <div class="date">2026 / 09 / 10</div>
       <h3>Hello World</h3>
       <p>从这里出发</p>
@@ -96,13 +105,13 @@
 </div>
 
 <!-- 左下角装饰立绘（半透明，不可点击） -->
-<img class="marisa" src="https://cdn.jsdelivr.net/gh/forest306-qwq/website@main/assets/marisa.png" alt="" aria-hidden="true">
+<img class="marisa" src="/assets/marisa.png" decoding="async" alt="" aria-hidden="true">
 
 <!-- 右下角：背景音乐（点一下播放 / 暂停，↗ 去网易云） -->
-<audio id="bgm" src="/assets/for-river.mp3" preload="metadata" loop></audio>
+<audio id="bgm" src="/assets/for-river.mp3" preload="none" loop></audio>
 
 <div class="now-playing" id="nowPlaying" data-state="ready">
-  <button class="np-toggle" type="button" aria-label="播放或暂停背景音乐">
+  <button class="np-toggle" type="button" aria-label="播放背景音乐" aria-pressed="false">
     <span class="dot"></span>
     <span class="label">点击播放</span>
     <span class="title">For River</span>
@@ -110,12 +119,13 @@
   <a class="np-ext"
      href="https://music.163.com/#/song?id=1645112"
      target="_blank" rel="noopener"
-     title="在网易云音乐打开">↗</a>
+     title="在网易云音乐打开" aria-label="在网易云音乐收听 For River（新窗口）">↗</a>
 </div>
 
-<script src="/assets/main.js"></script>
-<script src="/assets/player.js"></script>
-<script src="/assets/counter.js"></script>
+<script src="/assets/main.js" defer></script>
+<script src="/assets/player.js" defer></script>
+<script src="/assets/counter.js" defer></script>
 
+<script src="/assets/lightbox.js" defer></script>
 </body>
 </html>

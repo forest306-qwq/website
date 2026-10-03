@@ -9,19 +9,21 @@
 <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body data-anim="in">
+<a class="skip-link" href="#main-content">跳到正文</a>
+<p id="navigation-status" class="sr-only" role="status" aria-live="polite"></p>
 
 <header class="site-header">
   <a class="brand" href="/index.html">
-    <img class="avatar" src="/assets/avatar.jpg" alt="头像">
+    <img class="avatar" src="/assets/avatar.jpg" alt="头像" width="34" height="34" decoding="async">
     <span>
       <span class="brand-name">Forest306</span><br>
       <span class="brand-sub">personal site</span>
     </span>
   </a>
-  <nav class="nav">
+  <nav class="nav" aria-label="主要导航">
     <a class="nav-link" href="/index.html">主页</a>
     <a class="nav-link" href="/about.html">开盒</a>
-    <a class="nav-link is-active" href="/columns.html">专栏</a>
+    <a class="nav-link is-active" aria-current="page" href="/columns.html">专栏</a>
     <a class="nav-link" href="/diary.html">日记</a>
     <a class="nav-link" href="/links.html">链接</a>
     <a class="nav-link" href="/guestbook.html">留言</a>
@@ -30,7 +32,7 @@
 
 <div class="layout single">
 
-  <main class="page">
+  <main class="page" id="main-content" tabindex="-1">
 
     <p class="eyebrow">Columns / 计算机学习</p>
     <h1>计算机学习</h1>
@@ -40,15 +42,19 @@
 
     <h2>记录</h2>
 
+    <!-- AUTO:CODE-LIST:START -->
     <article class="diary-item">
-      <div class="date">2026 / 09 / 11</div>
-      <h3>C语言入门：井字棋</h3>
-      <a href="/columns/260911">简单的游戏，简单的代码</a>
+      <div class="date"><time datetime="2026-10-03">2026 / 10 / 03</time></div>
+      <h3><a href="/columns/261003.html">单链表：创建、遍历与插入</a></h3>
+      <a href="/columns/261003.html">把一个个节点连起来，再顺着 next 走到最后。</a>
     </article>
 
-    <!-- 添加笔记：
-         1. 复制 columns/260911.html 改名（同日多篇就加后缀，如 260911-2.html）
-         2. 在上面复制一个 <article class="diary-item">，改日期、标题、摘要和 <a href> -->
+    <article class="diary-item">
+      <div class="date"><time datetime="2026-09-11">2026 / 09 / 11</time></div>
+      <h3><a href="/columns/260911.html">C语言入门：井字棋</a></h3>
+      <a href="/columns/260911.html">简单的井字棋程序</a>
+    </article>
+    <!-- AUTO:CODE-LIST:END -->
 
     <p class="back-link"><a href="/columns.html">← 返回专栏</a></p>
 
@@ -66,13 +72,13 @@
 </div>
 
 <!-- 左下角装饰立绘（半透明，不可点击） -->
-<img class="marisa" src="https://cdn.jsdelivr.net/gh/forest306-qwq/website@main/assets/marisa.png" alt="" aria-hidden="true">
+<img class="marisa" src="/assets/marisa.png" decoding="async" alt="" aria-hidden="true">
 
 <!-- 右下角：背景音乐（点一下播放 / 暂停，↗ 去网易云） -->
-<audio id="bgm" src="/assets/for-river.mp3" preload="metadata" loop></audio>
+<audio id="bgm" src="/assets/for-river.mp3" preload="none" loop></audio>
 
 <div class="now-playing" id="nowPlaying" data-state="ready">
-  <button class="np-toggle" type="button" aria-label="播放或暂停背景音乐">
+  <button class="np-toggle" type="button" aria-label="播放背景音乐" aria-pressed="false">
     <span class="dot"></span>
     <span class="label">点击播放</span>
     <span class="title">For River</span>
@@ -80,11 +86,12 @@
   <a class="np-ext"
      href="https://music.163.com/#/song?id=1645112"
      target="_blank" rel="noopener"
-     title="在网易云音乐打开">↗</a>
+     title="在网易云音乐打开" aria-label="在网易云音乐收听 For River（新窗口）">↗</a>
 </div>
 
-<script src="/assets/main.js"></script>
-<script src="/assets/player.js"></script>
-<script src="/assets/counter.js"></script>
+<script src="/assets/main.js" defer></script>
+<script src="/assets/player.js" defer></script>
+<script src="/assets/counter.js" defer></script>
+<script src="/assets/lightbox.js" defer></script>
 </body>
 </html>

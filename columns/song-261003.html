@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>留言 · Forest306</title>
-<meta name="description" content="Forest306 的留言板">
+<title>月の眷属达 · Forest306</title>
+<meta name="description" content="每日一歌：月の眷属达">
 <link rel="icon" href="/assets/avatar.jpg">
 <link rel="stylesheet" href="/assets/style.css">
 </head>
@@ -23,10 +23,10 @@
   <nav class="nav" aria-label="主要导航">
     <a class="nav-link" href="/index.html">主页</a>
     <a class="nav-link" href="/about.html">开盒</a>
-    <a class="nav-link" href="/columns.html">专栏</a>
+    <a class="nav-link is-active" aria-current="page" href="/columns.html">专栏</a>
     <a class="nav-link" href="/diary.html">日记</a>
     <a class="nav-link" href="/links.html">链接</a>
-    <a class="nav-link is-active" aria-current="page" href="/guestbook.html">留言</a>
+    <a class="nav-link" href="/guestbook.html">留言</a>
   </nav>
 </header>
 
@@ -34,43 +34,38 @@
 
   <main class="page prose" id="main-content" tabindex="-1">
 
-    <p class="eyebrow">Guestbook</p>
-    <h1>留言板</h1>
-    <p class="lead">想说什么就写在这里，看到了会回</p>
+    <!-- 日期改这里 -->
+    <p class="eyebrow">专栏 / 每日一歌 / 2026-10-03</p>
 
-    <h2>留言</h2>
+    <!-- 歌名 -->
+    <h1>月の眷属达</h1>
 
-    <!--
-      留言用的是 giscus，内容存在本仓库的 Discussions（General 分类）里
-      想换样子：data-theme 可选 light / dark / preferred_color_scheme
-                （本站是永远白底，所以固定用 light，跟随系统的深色会格格不入）
-      想换分类：改 data-category 名字 + 去 giscus.app 重新抄一遍 data-category-id
-    -->
-    <p class="guestbook-help">使用 GitHub 账号登录后就可以留言。留言区若未能加载，可以<a href="https://github.com/forest306-qwq/website/discussions" target="_blank" rel="noopener">到 GitHub 留言</a>，或通过下方邮箱联系我。</p>
-    <noscript><p>当前浏览器未启用 JavaScript，请使用 GitHub 留言入口或邮箱。</p></noscript>
-    <div class="giscus"></div>
-    <script src="https://giscus.app/client.js"
-            data-repo="forest306-qwq/website"
-            data-repo-id="R_kgDOUVGF7A"
-            data-category="General"
-            data-category-id="DIC_kwDOUVGF7M4DFdCJ"
-            data-mapping="pathname"
-            data-strict="0"
-            data-reactions-enabled="1"
-            data-emit-metadata="0"
-            data-input-position="bottom"
-            data-theme="light"
-            data-lang="zh-CN"
-            data-loading="lazy"
-            crossorigin="anonymous"
-            async>
-    </script>
+    <!-- 开头那句，可删 -->
+    <p class="lead"></p>
 
-    <h2>不方便登录的话</h2>
-    <p>
-      留言要一个 GitHub 账号（算是防刷的门槛）如果懒得登录，
-      直接发邮件给我也行：<a href="mailto:yuk1@bupt.edu.cn">yuk1@bupt.edu.cn</a>
-    </p>
+    <h2>信息</h2>
+    <dl class="facts">
+      <div class="row"><dt>艺人</dt><dd>来夢緑</dd></div>
+      <div class="row"><dt>出自</dt><dd>专辑 永夜の月 初版</dd></div>
+      <div class="row"><dt>链接</dt>
+        <dd><a href="https://music.163.com/#/song?id=775330" target="_blank" rel="noopener">在网易云音乐听</a></dd>
+      </div>
+    </dl>
+
+    <!-- ===== 想说的（可自由增删小节） ===== -->
+    <h2>想说的</h2>
+    <p>最初听到这首歌，应该是考古B站的av2视频</p>
+    <p>这首歌的钢琴独奏，是月色下的静谧和安柔</p>
+    <p>能够使人静下心来的同时，有那么一种童年夜晚的回忆渲染</p>
+    <p>那时的东方，真是尚未开拓的一片净土啊</p>
+    <p>整部专辑的风格相同，相信如果你喜欢这首歌，就会爱上整部专辑的</p>
+
+
+
+    <!-- 想插歌词或引用，可以用 <pre><code>…</code></pre> 或者普通段落 -->
+
+    <!-- 返回链接，建议留着 -->
+    <p class="back-link"><a href="/columns/song.html">← 返回每日一歌</a></p>
 
   </main>
 
