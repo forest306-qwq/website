@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>单链表：创建、遍历与释放 · Forest306</title>
+<meta name="description" content="C 语言单链表练习：尾插法创建节点、遍历链表、分配失败处理与内存释放，附完整源码和运行结果。">
+<link rel="icon" href="/assets/avatar.jpg">
+<link rel="stylesheet" href="/assets/style.css?v=cae7a0c8ae1dd7d0">
+</head>
+<body data-anim="in">
+<a class="skip-link" href="#main-content">跳到正文</a>
+<p id="navigation-status" class="sr-only" role="status" aria-live="polite"></p>
+
+<header class="site-header">
+  <a class="brand" href="/index.html">
+    <img class="avatar" src="/assets/avatar.jpg" alt="头像" width="34" height="34" decoding="async">
+    <span>
+      <span class="brand-name">Forest306</span><br>
+      <span class="brand-sub">personal site</span>
+    </span>
+  </a>
+  <nav class="nav" aria-label="主要导航">
+    <a class="nav-link" href="/index.html">主页</a>
+    <a class="nav-link" href="/about.html">开盒</a>
+    <a class="nav-link is-active" aria-current="page" href="/columns.html">专栏</a>
+    <a class="nav-link" href="/diary.html">日记</a>
+    <a class="nav-link" href="/links.html">链接</a>
+    <a class="nav-link" href="/guestbook.html">留言</a>
+  </nav>
+</header>
+
+<div class="layout single">
+
+  <main class="page prose" id="main-content" tabindex="-1">
+    <p class="eyebrow">计算机学习 / <time datetime="2026-10-03">2026-10-03</time></p>
+    <h1>单链表：创建、遍历与插入(New)</h1>
+    <p class="lead">把一个个节点连起来，再顺着 next 走到最后。</p>
+
+    <p>昨天的代码相对简陋，缺少了头部插入的情况，逻辑上也有所错误</p>
+    <p>这是新的一版</p>
+    <br>
+  
+
+    <h2>完整代码</h2>
+    <pre><code class="language-c">#include <stdio.h>
+#include <stdlib.h>
+struct Node{
+    int data;
+    struct Node* next;
+};
+struct Node* InsertHead(int value,struct Node* head){
+    if(head == NULL){
+        printf("链表不存在，创造新链表\n");
+    }
+    struct Node* NewNode = malloc(sizeof(struct Node));
+    NewNode -> data = value;
+    NewNode -> next = head;
+    head = NewNode;
+    return head;
+}
+
+struct Node* InsertTail(int value,struct Node* head){
+    struct Node* NewNode = malloc(sizeof(struct Node));
+    NewNode -> data = value;
+    NewNode -> next = NULL;
+    if(head == NULL){
+        printf("链表不存在，创造新链表\n");
+        head = NewNode;
+        return head;
+    }
+    struct Node* traveser = head;
+    while(traveser->next != NULL){
+        traveser = traveser -> next;
+    }
+
+    traveser -> next = NewNode;
+    return head;
+}
+
+struct Node* InsertAfter(int value,struct Node* prev){
+    if(prev == NULL){
+        printf("前驱链表不能为空\n");
+        return NULL;
+    }
+    struct Node* NewNode = malloc(sizeof(struct Node));
+    NewNode -> data = value;
+    NewNode -> next = NULL;
+    NewNode -> next = prev -> next;
+    prev -> next = NewNode;
+    return NewNode;
+}
+
+void LinkPrint(struct Node* head){
+    struct Node* traveser = head;
+    int count = 0;
+    if(traveser == NULL){
+        printf("链表不存在\n");
+        return;
+    }
+    while(traveser != NULL){
+        printf("%d ",traveser -> data);
+        traveser = traveser -> next;
+        count++;
+    }
+    printf("一共有%d个链表\n",count);
+    return;
+}
+
+int main(){
+    struct Node* head = InsertHead(10,NULL);
+    InsertTail(20,head);
+    InsertAfter(50,head);
+    LinkPrint(head);
+    return 0;
+}</code></pre>
+
+    <p><a href="/columns/node_insert_new.c" download>下载完整 C 源码</a></p>
+
+    <h2>运行结果</h2>
+    <code>10 50 20</code>
+    <p>分别为3个函数的测试使用</p>
+
+    <h2>想到了插入时的left与right指针其实没有必要</h2>
+    <p>理论上只需要left指针即可</p>
+    <pre><code class="language-c">
+        NewNode->next = prev->next;
+        prev->next = NewNode;
+    </code></pre>
+    <p>其中的prev指针本质上即为left,right完全可以通过left->next得出</p>
+
+    <h2>头部插入，尾部插入，以及中间的插入</h2>
+    <p>头部的插入与其他两者不同，需要单独操作，并且产生并返回新的head指针</p>
+    <p>尾部插入实际上也是中间插入的一种，不过因为位置固定只需遍历到尾部，所以相对简单</p>
+    <p>中间的插入需要提供prev指针</p>
+
+    <hr>
+    <h1>单链表：删除</h1>
+    <p>相对于插入，链表节点的删除比较简单，非头部节点只使用一个变量暂时储存该节点的指针，通过prev->next = prev->next->next与后面的节点链接</p>
+    <p>最后再free函数释放即可</p>
+    <p>头部节点，令head = head->next赋值后释放，最后返回新的head</p>
+    <p><a href="/columns/node_delete.c" download>下载完整 C 源码</a></p>
+
+    <br>
+    <br>
+    <p>至此，简单的链表入门就学习完了，明天继续学习双向链表</p>
+    <p>晚安</p>
+
+
+   
+
+    <p class="back-link"><a href="/columns/code.html">← 返回计算机学习</a></p>
+
+  </main>
+
+  <footer class="site-footer">
+  © 2026 Forest306
+  <span class="uptime" data-start="2026-09-10T21:40:00+08:00">运行 <span id="site-uptime">–</span></span>
+  <span class="visit">
+    <span id="busuanzi_container_site_pv">访问 <span class="num" id="busuanzi_value_site_pv"></span> 次</span>
+    <span id="busuanzi_container_site_uv">访客 <span class="num" id="busuanzi_value_site_uv"></span> 人</span>
+  </span>
+  </footer>
+
+</div>
+
+<!-- 左下角装饰立绘（半透明，不可点击） -->
+<img class="marisa" src="/assets/marisa.png" decoding="async" alt="" aria-hidden="true">
+
+<!-- 右下角：背景音乐（点一下播放 / 暂停，↗ 去网易云） -->
+<audio id="bgm" src="/assets/for-river.mp3" preload="none" loop></audio>
+
+<div class="now-playing" id="nowPlaying" data-state="ready">
+  <button class="np-toggle" type="button" aria-label="播放背景音乐" aria-pressed="false">
+    <span class="dot"></span>
+    <span class="label">点击播放</span>
+    <span class="title">For River</span>
+  </button>
+  <a class="np-ext"
+     href="https://music.163.com/#/song?id=1645112"
+     target="_blank" rel="noopener"
+     title="在网易云音乐打开" aria-label="在网易云音乐收听 For River（新窗口）">↗</a>
+</div>
+
+<script src="/assets/main.js" defer></script>
+<script src="/assets/player.js" defer></script>
+<script src="/assets/counter.js" defer></script>
+
+<script src="/assets/lightbox.js" defer></script>
+</body>
+</html>
