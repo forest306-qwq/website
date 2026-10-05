@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>双向链表：创造，插入，遍历，删除 · Forest306</title>
+<meta name="description" content="双向链表：创造，插入，遍历，删除">
+<link rel="icon" href="/assets/avatar.jpg">
+<link rel="stylesheet" href="/assets/style.css?v=8dde9b3013683ebf">
+</head>
+<body data-anim="in">
+<a class="skip-link" href="#main-content">跳到正文</a>
+<p id="navigation-status" class="sr-only" role="status" aria-live="polite"></p>
+
+<header class="site-header">
+  <a class="brand" href="/index.html">
+    <img class="avatar" src="/assets/avatar.jpg" alt="头像" width="34" height="34" decoding="async">
+    <span>
+      <span class="brand-name">Forest306</span><br>
+      <span class="brand-sub">personal site</span>
+    </span>
+  </a>
+  <nav class="nav" aria-label="主要导航">
+    <a class="nav-link" href="/index.html">主页</a>
+    <a class="nav-link" href="/about.html">开盒</a>
+    <a class="nav-link is-active" aria-current="page" href="/columns.html">专栏</a>
+    <a class="nav-link" href="/diary.html">日记</a>
+    <a class="nav-link" href="/links.html">链接</a>
+    <a class="nav-link" href="/guestbook.html">留言</a>
+  </nav>
+</header>
+
+<div class="layout single">
+
+  <main class="page prose" id="main-content" tabindex="-1">
+    <p class="eyebrow">计算机学习 / <time datetime="2026-10-03">2026-10-03</time></p>
+    <h1>双向链表：创造，插入，遍历，删除</h1>
+    <p class="lead"></p>
+
+    <p>在昨天链表学习的基础上，今天学习了双向链表以及其使用</p>
+    <p>相对于单链表，双向链表增加了每个节点的prev指针，从而指向上一个节点</p>
+
+
+    <h2>完整代码</h2>
+    <pre><code class="language-c">
+#include <stdio.h>
+#include <stdlib.h>
+struct dllNode{
+    int data;
+    struct dllNode* prev;
+    struct dllNode* next;
+};
+
+struct dllNode* dllCreate(int value){
+    struct dllNode* NewNode = malloc(sizeof(struct dllNode));
+    if(NewNode == NULL){
+        printf("内存申请失败\n");
+        return NULL;
+    }
+    NewNode->data = value;
+    NewNode->next = NULL;
+    NewNode->prev = NULL;
+    return NewNode;
+}
+
+struct dllNode* InsertHead(struct dllNode* head,struct dllNode* NewNode){
+    if(head == NULL){
+        printf("原链表为空，无法头部插入\n");
+        return NULL;
+    }
+    if(NewNode == NULL){
+        printf("未接收到插入的节点指针\n");
+        return NULL;
+    }
+    NewNode->next = head;
+    head->prev = NewNode;
+    head = NewNode;
+    return head;
+}
+
+void InsertAfter(struct dllNode* prevNode,struct dllNode* NewNode){
+    if(prevNode == NULL){
+        printf("未找到前置节点指针，无法插入\n");
+        return;
+    }
+    if(NewNode == NULL){
+        printf("未接收到插入的节点指针\n");
+        return;
+    }
+    if(prevNode -> next != NULL){
+        NewNode -> next = prevNode -> next;
+        prevNode -> next ->prev = NewNode;
+    }
+    prevNode -> next = NewNode;
+    NewNode -> prev = prevNode;
+
+
+    return;
+
+}
+
+struct dllNode* InsertTail(struct dllNode* tail,struct dllNode* NewNode){
+    if(tail == NULL){
+        printf("未找到前置节点指针，无法插入\n");
+        return;
+    }
+    if(NewNode == NULL){
+        printf("未接收到插入的节点指针\n");
+        return;
+    }
+    tail -> next = NewNode;
+    NewNode -> prev = tail;
+    tail = NewNode;
+    return tail;
+}
+
+struct dllNode* TraveserForward(struct dllNode* head){
+    if(head == NULL){
+        printf("链表为空\n");
+        return NULL;
+    }
+    int count = 1;
+    struct dllNode* traveser = head;
+    while(traveser->next != NULL){
+        traveser = traveser -> next;
+        count++;
+    }
+    struct dllNode* tail = traveser;
+    printf("一共遍历了%d个节点\n",count);
+    return tail;
+}
+
+struct dllNode* TraveserBackward(struct dllNode* tail){
+    if(tail == NULL){
+        printf("链表为空\n");
+        return NULL;
+    }
+    int count = 1;
+    struct dllNode* traveser = tail;
+    while(traveser -> prev != NULL){
+        traveser = traveser -> prev;
+        count++;
+    }
+    struct dllNode* head = traveser;
+    printf("一共反向遍历了%d个节点\n",count);
+    return head;
+}
+
+struct dllNode* NodeDelete(struct dllNode* head,struct dllNode* del){
+    if(del == head){
+        head = del->next;
+    }
+    if(del ->next != NULL){
+        del -> next -> prev = del ->prev;
+    }
+    if(del ->prev != NULL){
+        del ->prev ->next = del -> next;
+    }
+
+    free(del);
+    return head;
+}
+
+</code></pre>
+
+    <p><a href="/columns/dll_creation.c" download>下载完整 C 源码</a></p>
+
+    <h2>运行结果</h2>
+    <p>我没写主函数哈哈哈</p>
+    <h2>各函数功能</h2>
+    <ul>dllCreate:申请内存并创建新节点，赋值，并将prev和next设置为空指针</ul>
+    <ul>InsertHead:通过NewNode->next = head和head->prev = NewNode使得新建的节点作为头部插入原链表头部，并返回新的head</ul>
+    <ul>InsertAfter:需要插入位置的前一个节点的指针（当然非末尾的插入后一个节点的指针也可以）,完成非头部的插入</ul>
+    <ul>InsertTail:需要原尾部指针来完成尾部的插入，尾部指针可以由头部指针正向遍历返回</ul>
+    <ul>TraveserForward:正向遍历，由头部指针得到尾部指针</ul>
+    <ul>TraveserBackward:逆向遍历，由尾部指针得到头部指针</ul>
+    <ul>NodeDelete:删除节点，只需要所删除的节点的指针，以及通过判断前后节点是否存在来决定是连接还是赋值NULL作为头部或尾部</ul>
+
+    <h2>相较于单链表的优点</h2>
+    <ul>单链表只能由前节点的指针指向后节点而不能倒退，意味这前节点的指针的价值一定比后指针更大，而双向链表就解决了这个问题</ul>
+    <ul>双相链表支持逆向遍历，可以逆向打印各节点内容，更具有灵活性</ul>
+    <ul>双向链表节点的删除不需要该节点的前指针，只需要指向自己的指针即可（因为可以推得）</ul>
+    <br>
+    <p>明天应该就会学习<s>循环链表</s>了，晚安</p>
+
+   
+
+    <p class="back-link"><a href="/columns/code.html">← 返回计算机学习</a></p>
+
+  </main>
+
+  <footer class="site-footer">
+  © 2026 Forest306
+  <span class="uptime" data-start="2026-09-10T21:40:00+08:00">运行 <span id="site-uptime">–</span></span>
+  <span class="visit">
+    <span id="busuanzi_container_site_pv">访问 <span class="num" id="busuanzi_value_site_pv"></span> 次</span>
+    <span id="busuanzi_container_site_uv">访客 <span class="num" id="busuanzi_value_site_uv"></span> 人</span>
+  </span>
+  </footer>
+
+</div>
+
+<!-- 左下角装饰立绘（半透明，不可点击） -->
+<img class="marisa" src="/assets/marisa.png" decoding="async" alt="" aria-hidden="true">
+
+<!-- 右下角：背景音乐（点一下播放 / 暂停，↗ 去网易云） -->
+<audio id="bgm" src="/assets/for-river.mp3" preload="none" loop></audio>
+
+<div class="now-playing" id="nowPlaying" data-state="ready">
+  <button class="np-toggle" type="button" aria-label="播放背景音乐" aria-pressed="false">
+    <span class="dot"></span>
+    <span class="label">点击播放</span>
+    <span class="title">For River</span>
+  </button>
+  <a class="np-ext"
+     href="https://music.163.com/#/song?id=1645112"
+     target="_blank" rel="noopener"
+     title="在网易云音乐打开" aria-label="在网易云音乐收听 For River（新窗口）">↗</a>
+</div>
+
+<script src="/assets/main.js" defer></script>
+<script src="/assets/player.js" defer></script>
+<script src="/assets/counter.js?v=73be5bc936f548f6" defer></script>
+
+<script src="/assets/lightbox.js" defer></script>
+</body>
+</html>
