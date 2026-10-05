@@ -749,20 +749,21 @@ body.is-loading::before { content:""; position:fixed; top:0; left:0; right:0; he
   body[data-anim="out"] .page,body[data-anim="out"] .side,body[data-anim="out"] .site-footer { opacity:1; }
 }
 
-/* 主页背景：普通文档流，与顶部 sticky 导航分开 */
+/* 主页背景随页面滚动，以白色渐变衔接正文。 */
 .home-backdrop {
-  height:clamp(240px, 60svh, 620px);
-  background-color:#edf2f7;
-  /* 选好图片后，将此处改为 url("/assets/你的背景图片.jpg")。 */
+  height:clamp(340px, 62svh, 660px);
+  background-color:#edf1fa;
   background-image:
-    radial-gradient(ellipse at 18% 25%, rgba(181, 213, 239, .85), transparent 58%),
-    radial-gradient(ellipse at 85% 75%, rgba(221, 233, 216, .75), transparent 58%),
-    linear-gradient(120deg, #eff6fc, #e9f0f6 52%, #faf5eb);
-  background-position:center;
+    linear-gradient(180deg, rgba(255,255,255,.12) 0%, rgba(255,255,255,.08) 45%, rgba(255,255,255,.42) 76%, #fff 100%),
+    url("/assets/home-sky.webp");
+  background-position:center, center 43%;
   background-size:cover;
   background-repeat:no-repeat;
-  border-bottom:1px solid var(--line);
 }
 @media (max-width:640px) {
-  .home-backdrop { height:clamp(220px, 40svh, 380px); }
+  .home-backdrop {
+    height:clamp(280px, 46svh, 380px);
+    background-position:center, 32% center;
+  }
 }
+
