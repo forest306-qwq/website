@@ -1,96 +1,91 @@
-/* ===========================================================
-   Forest306 · 页脚统计  —  counter.js
-   1) 访问量：用不蒜子（busuanzi）统计，静态站没有后端，
-      数字由第三方服务记录
-   2) 存活时间：从建站时刻算到现在，纯前端计算，不依赖任何服务
-   注意：站内跳转是局部换页（main.js），不产生新的页面加载，
-        所以换页后要再跑一次，否则那些浏览不会被记上
-   =========================================================== */
-
+/* 页脚统计：单一数据源；每次打开页面或完成站内切换计一次访问。 */
 (function () {
   "use strict";
+  if (window.__countReload) return;
 
-  var SRC = "https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js";
+  var API = "https://busuanzi.9420.ltd/api";
+  var IDENTITY_KEY = "forest306-counter-identity";
+  var activeRequest;
+  var lastPage;
+  var sequence = 0;
 
-  /* ---------------- 访问量 ---------------- */
-
-  function loadCounter() {
-    if (["localhost", "127.0.0.1", ""].indexOf(location.hostname) !== -1) return;
-    var old = document.getElementById("bsz-script");
-    if (old && old.parentNode) old.parentNode.removeChild(old);
-
-    var s = document.createElement("script");
-    s.id = "bsz-script";
-    s.async = true;
-    s.src = SRC;
-    (document.body || document.documentElement).appendChild(s);
-  }
-
-  /* ---------------- 存活时间 ---------------- */
-
-  function num(v) { return '<span class="num">' + v + "</span>"; }
-
-  function renderUptime() {
-    var box = document.getElementById("site-uptime");
-    if (!box) return;
-
-    // 起点时间写在页脚的 data-start 上，改日期只改 HTML 就行
-    var host = box.closest ? box.closest("[data-start]") : null;
-    if (!host) return;
-
-    var start = new Date(host.getAttribute("data-start"));
-    if (isNaN(start.getTime())) return;
-
-    var ms = Date.now() - start.getTime();
-    if (ms < 0) ms = 0;
-
-    var mins  = Math.floor(ms / 60000);
-    var hours = Math.floor(mins / 60);
-    var days  = Math.floor(hours / 24);
-
-    if (days >= 1) {
-      box.innerHTML = num(days) + " 天 " + num(hours % 24) + " 小时";
-    } else if (hours >= 1) {
-      box.innerHTML = num(hours) + " 小时 " + num(mins % 60) + " 分";
-    } else {
-      box.innerHTML = num(mins) + " 分钟";
-    }
-  }
-
-  /* ---------------- 兜底：确保数字真的显示出来 ---------------- */
-  /* 不蒜子的脚本在异常分支里会把容器设成 display:none
-     （站内换页时重复注入脚本，容易触发这个分支）
-     所以只要确认数字已经取到，就把它强制显示回来 */
-
-  function ensureVisible() {
-    ["site_pv", "site_uv"].forEach(function (key) {
-      var val = document.getElementById("busuanzi_value_" + key);
-      var box = document.getElementById("busuanzi_container_" + key);
-      if (!val || !box) return;
-      if (/^\d+$/.test(val.textContent.trim())) {
-        box.style.display = "inline";
-      }
+  function renderCounts(pv, uv, state, message) {
+    var visit = document.querySelector(".site-footer .visit");
+    if (!visit) return;
+    visit.dataset.state = state;
+    visit.title = message || "";
+    ["site_pv", "site_uv"].forEach(function (key, index) {
+      var value = document.getElementById("busuanzi_value_" + key);
+      var container = document.getElementById("busuanzi_container_" + key);
+      if (value) value.textContent = index === 0 ? pv : uv;
+      if (container) container.style.display = "inline";
     });
   }
 
-  /* ---------------- 跑起来 ---------------- */
+  async function countVisit() {
+    var page = location.origin + location.pathname;
+    if (page === lastPage) return;
+    lastPage = page;
+    var id = ++sequence;
+    if (activeRequest) activeRequest.abort();
+    if (location.protocol === "file:" || /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)) {
+      renderCounts("–", "–", "preview", "本地预览不计入访问统计");
+      return;
+    }
+
+    var controller = new AbortController();
+    activeRequest = controller;
+    var timeout = setTimeout(function () { controller.abort(); }, 8000);
+    var headers = { "x-bsz-referer": page };
+    try {
+      var identity = localStorage.getItem(IDENTITY_KEY);
+      if (identity) headers.Authorization = "Bearer " + identity;
+    } catch (_) { /* 禁用存储时，服务仍可根据 IP 和浏览器识别访客。 */ }
+    renderCounts("…", "…", "loading", "正在读取访问统计");
+    try {
+      var response = await fetch(API, {
+        method: "POST", headers: headers, cache: "no-store", signal: controller.signal
+      });
+      if (!response.ok) throw new Error("HTTP " + response.status);
+      var result = await response.json();
+      var data = result.data;
+      if (!result.success || !data || ![data.site_pv, data.site_uv].every(function (value) {
+        return /^\d+$/.test(String(value)) && Number.isSafeInteger(Number(value));
+      })) throw new Error("Invalid counter response");
+      var token = response.headers.get("Set-Bsz-Identity");
+      if (token) {
+        try { localStorage.setItem(IDENTITY_KEY, token); } catch (_) { /* 存储不可用不影响显示。 */ }
+      }
+      if (id === sequence) renderCounts(data.site_pv, data.site_uv, "ready");
+    } catch (_) {
+      if (id === sequence) renderCounts("–", "–", "error", "统计服务暂时不可用，请稍后再访问");
+    } finally {
+      clearTimeout(timeout);
+      if (id === sequence) activeRequest = null;
+    }
+  }
+
+  function num(value) { return '<span class="num">' + value + "</span>"; }
+
+  function renderUptime() {
+    var box = document.getElementById("site-uptime");
+    var host = box && box.closest("[data-start]");
+    if (!host) return;
+    var start = new Date(host.getAttribute("data-start")).getTime();
+    if (!Number.isFinite(start)) return;
+    var minutes = Math.floor(Math.max(0, Date.now() - start) / 60000);
+    var hours = Math.floor(minutes / 60);
+    var days = Math.floor(hours / 24);
+    box.innerHTML = days ? num(days) + " 天 " + num(hours % 24) + " 小时" :
+      hours ? num(hours) + " 小时 " + num(minutes % 60) + " 分" : num(minutes) + " 分钟";
+  }
 
   function refresh() {
-    loadCounter();
     renderUptime();
-    // 数字是异步回来的，多查几次；稳态后每分钟查一次也无所谓
-    [400, 1200, 2500].forEach(function (ms) { setTimeout(ensureVisible, ms); });
+    countVisit();
   }
-
-  // 换页之后 main.js 会调这个：重新取访问量 + 重算存活时间
   window.__countReload = refresh;
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", refresh);
-  } else {
-    refresh();
-  }
-
-  // 页面开着不动时，每分钟刷新一次存活时间
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", refresh, { once: true });
+  else refresh();
   setInterval(renderUptime, 60000);
 })();
