@@ -145,6 +145,23 @@ def render_list(entries):
         '    </article>' for e in entries)
 
 
+def manual_list_hrefs(text, region):
+    """保留自动区域外的手动条目，避免再次生成同一篇文章。"""
+    start, end = f'<!-- AUTO:{region}:START -->', f'<!-- AUTO:{region}:END -->'
+    if text.count(start) != 1 or text.count(end) != 1:
+        return set()
+    outside = text[:text.index(start)] + text[text.index(end) + len(end):]
+    main = first(Document(outside).root, 'main')
+    hrefs = set()
+    if main:
+        for article in main.find('article', 'diary-item'):
+            heading = first(article, 'h3')
+            link = first(heading, 'a') if heading else None
+            if link:
+                hrefs.add(link.attrs.get('href', ''))
+    return hrefs
+
+
 def sync(site):
     entries = collect(site)
     labels = {'code': '计算机学习', 'song': '每日一歌', 'diary': '日记'}
@@ -163,7 +180,11 @@ def sync(site):
         selected = [e for e in entries if e['category'] == category]
         counts[category] = len(selected)
         relative = f'columns/{category}.html'
-        updates[relative] = replace_region(load(relative), category.upper() + '-LIST', render_list(selected),
+        text = load(relative)
+        region = category.upper() + '-LIST'
+        manual = manual_list_hrefs(text, region)
+        generated = [entry for entry in selected if entry['href'] not in manual]
+        updates[relative] = replace_region(text, region, render_list(generated),
             r'<article class="diary-item"[^>]*>.*?</article>(?:\s*<article class="diary-item"[^>]*>.*?</article>)*(?:\s*<!-- 添加.*?-->)?')
     text = load('columns.html')
     for category, unit, suffix in [('code', '篇', 'Notes'), ('song', '首', 'Songs')]:
