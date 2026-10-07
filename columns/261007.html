@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>循环链表解决约瑟夫问题 · Forest306</title>
+<meta name="description" content="循环链表解决约瑟夫问题">
+<link rel="icon" href="/assets/avatar.jpg">
+<link rel="stylesheet" href="/assets/style.css?v=8dde9b3013683ebf">
+</head>
+<body data-anim="in">
+<a class="skip-link" href="#main-content">跳到正文</a>
+<p id="navigation-status" class="sr-only" role="status" aria-live="polite"></p>
+
+<header class="site-header">
+  <a class="brand" href="/index.html">
+    <img class="avatar" src="/assets/avatar.jpg" alt="头像" width="34" height="34" decoding="async">
+    <span>
+      <span class="brand-name">Forest306</span><br>
+      <span class="brand-sub">personal site</span>
+    </span>
+  </a>
+  <nav class="nav" aria-label="主要导航">
+    <a class="nav-link" href="/index.html">主页</a>
+    <a class="nav-link" href="/about.html">开盒</a>
+    <a class="nav-link is-active" aria-current="page" href="/columns.html">专栏</a>
+    <a class="nav-link" href="/diary.html">日记</a>
+    <a class="nav-link" href="/links.html">链接</a>
+    <a class="nav-link" href="/guestbook.html">留言</a>
+  </nav>
+</header>
+
+<div class="layout single">
+
+  <main class="page prose" id="main-content" tabindex="-1">
+    <p class="eyebrow">计算机学习 / <time datetime="2026-10-03">2026-10-03</time></p>
+    <h1>循环链表解决约瑟夫问题</h1>
+    <p class="lead"></p>
+
+    <p>最后一种链表--循环链表</p>
+    <p>顾名思义，将链表节点首尾相连，达到循环的效果</p>
+    <p>下面代码是其使用的主要函数</p>
+
+
+    <h2>完整代码</h2>
+    <pre><code class="language-c">
+#include <stdio.h>
+#include <stdlib.h>
+struct cllNode{
+    int data;
+    struct cllNode* next;
+};
+
+typedef struct cllNode cll;
+
+cll* InsertNode(cll* LeftPointer,int value){
+    cll* NewNode = malloc(sizeof(cll));
+    if(NewNode == NULL){
+        printf("内存申请失败\n");
+        return NULL;
+    }
+    NewNode -> data = value;
+    NewNode -> next = NewNode;
+
+    if(LeftPointer == NULL){
+        printf("创建新链表\n");
+        cll* StartPointer = NewNode;
+        return StartPointer;
+    }
+    NewNode -> next = LeftPointer -> next;
+    LeftPointer -> next = NewNode;
+    return NewNode;
+}
+
+cll* TraverseNode(cll* StartPointer){
+    if(StartPointer == NULL){
+        printf("空链表，无法遍历\n");
+        return NULL;
+    }
+    cll* traverse_pointer = StartPointer;
+    int count = 0;
+    do{
+        printf("%d -> ",traverse_pointer->data);
+        traverse_pointer = traverse_pointer -> next;
+        count++;
+    }while(traverse_pointer != StartPointer);
+    printf("\n");
+    printf("遍历了%d个节点",count);
+    return traverse_pointer;
+} 
+
+cll* DeleteNode(cll* ThisNode,cll* LeftPointer){
+    if(ThisNode == NULL){
+        printf("不存在此节点\n");
+        return NULL;
+    }
+    if(LeftPointer == NULL){
+        printf("前驱节点指针传入错误\n");
+        return NULL;
+    }
+    if(ThisNode == LeftPointer){
+        printf("单个节点删除，现已成为空链表\n");
+        free(ThisNode);
+        return NULL;
+    }
+    LeftPointer -> next = ThisNode -> next;
+    free(ThisNode);
+    return LeftPointer;
+}
+
+
+</code></pre>
+
+
+
+    <p>事实上比较简单对吧，下面衍生的是用其解决的问题：约瑟夫问题</p>
+
+    <br>
+    <hr>
+    <br>
+    <h2>约瑟夫问题</h2>
+    <h3>历史背景</h3>
+    <p>这个问题是以弗拉维奥·约瑟夫命名的，他是1世纪的一名犹太历史学家。他在自己的日记中写道，</p>
+        <p>他和他的40个战友被罗马军队包围在洞中。他们讨论是自杀还是被俘，最终决定自杀，并以抽签的方式决定谁杀掉谁。</p>
+            <p>约瑟夫斯和另外一个人是最后两个留下的人。约瑟夫斯说服了那个人，他们将向罗马军队投降，不再自杀。约瑟夫斯把他的存活归因于运气或天意，他不知道是哪一个。</p>
+
+    <h3>完整题设</h3>
+    <p>一共41个人，从第一位开始计数，每数到第三个的人自杀，然后从自杀的人的下一位重新从1计数</p>
+    <p>如此类推，直到最后剩下2个人，求出两个人的位置</p>
+
+    <h3>代码：使用我上文的函数</h3>
+    <pre><code class="language-c">
+    #define MAX_MUN 41
+    int main(){
+    cll* head =InsertNode(NULL,1);
+    cll* Left =head;
+    for(int i = 2;i <= 41;i++){
+        Left = InsertNode(Left,i);
+    }
+
+    int count = MAX_MUN;
+    while(count >= 3){
+        DeleteNode(head->next->next,head->next);
+        count--;
+        head = head ->next->next;
+    }
+    TraverseNode(head);
+    return 0;
+}
+    </code>
+    </pre>
+    <h3>输出结果</h3>
+    <p>16 -> 31 -> </p>
+    <p>这里表明第16号位和第31号位是安全的</p>
+    <p><a href="/columns/JosephusProblem.c" download>下载完整 C 源码</a></p>
+
+    <p class="back-link"><a href="/columns/code.html">← 返回计算机学习</a></p>
+
+  </main>
+
+  <footer class="site-footer">
+  © 2026 Forest306
+  <span class="uptime" data-start="2026-09-10T21:40:00+08:00">运行 <span id="site-uptime">–</span></span>
+  <span class="visit">
+    <span id="busuanzi_container_site_pv">访问 <span class="num" id="busuanzi_value_site_pv"></span> 次</span>
+    <span id="busuanzi_container_site_uv">访客 <span class="num" id="busuanzi_value_site_uv"></span> 人</span>
+  </span>
+  </footer>
+
+</div>
+
+<!-- 左下角装饰立绘（半透明，不可点击） -->
+<img class="marisa" src="/assets/marisa.png" decoding="async" alt="" aria-hidden="true">
+
+<!-- 右下角：背景音乐（点一下播放 / 暂停，↗ 去网易云） -->
+<audio id="bgm" src="/assets/for-river.mp3" preload="none" loop></audio>
+
+<div class="now-playing" id="nowPlaying" data-state="ready">
+  <button class="np-toggle" type="button" aria-label="播放背景音乐" aria-pressed="false">
+    <span class="dot"></span>
+    <span class="label">点击播放</span>
+    <span class="title">For River</span>
+  </button>
+  <a class="np-ext"
+     href="https://music.163.com/#/song?id=1645112"
+     target="_blank" rel="noopener"
+     title="在网易云音乐打开" aria-label="在网易云音乐收听 For River（新窗口）">↗</a>
+</div>
+
+<script src="/assets/main.js" defer></script>
+<script src="/assets/player.js" defer></script>
+<script src="/assets/counter.js?v=73be5bc936f548f6" defer></script>
+
+<script src="/assets/lightbox.js" defer></script>
+</body>
+</html>
