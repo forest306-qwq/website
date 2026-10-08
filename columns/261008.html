@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>栈：最后落下的雪，最先看见春天 · Forest306</title>
+<meta name="description" content="栈：最后落下的雪，最先看见春天">
+<link rel="icon" href="/assets/avatar.jpg">
+<link rel="stylesheet" href="/assets/style.css?v=8dde9b3013683ebf">
+</head>
+<body data-anim="in">
+<a class="skip-link" href="#main-content">跳到正文</a>
+<p id="navigation-status" class="sr-only" role="status" aria-live="polite"></p>
+
+<header class="site-header">
+  <a class="brand" href="/index.html">
+    <img class="avatar" src="/assets/avatar.jpg" alt="头像" width="34" height="34" decoding="async">
+    <span>
+      <span class="brand-name">Forest306</span><br>
+      <span class="brand-sub">personal site</span>
+    </span>
+  </a>
+  <nav class="nav" aria-label="主要导航">
+    <a class="nav-link" href="/index.html">主页</a>
+    <a class="nav-link" href="/about.html">开盒</a>
+    <a class="nav-link is-active" aria-current="page" href="/columns.html">专栏</a>
+    <a class="nav-link" href="/diary.html">日记</a>
+    <a class="nav-link" href="/links.html">链接</a>
+    <a class="nav-link" href="/guestbook.html">留言</a>
+  </nav>
+</header>
+
+<div class="layout single">
+
+  <main class="page prose" id="main-content" tabindex="-1">
+    <p class="eyebrow">计算机学习 / <time datetime="2026-10-03">2026-10-08</time></p>
+    <h1>栈：最后落下的雪，最先看见春天</h1>
+    <p class="lead"></p>
+
+    <p>最初知道栈，应该来自C语言的学习</p>
+    <p>内存中的栈区，以及其中未初始化的数据</p>
+    <p><del>以及烫烫烫^^</del></p>
+    <p>如今算是第一次与栈正式见面，从其本质思想入手，能够更好理解并掌握他</p>
+
+    <h2>本质思想</h2>
+    <p>栈所体现的主要思想便是“后进先出”</p>
+    <p>为了模拟现实中存在的这种客观现象，一切对栈的操作由栈顶展开</p>
+    <p>同时，他并不是一种底层的数据结构，而是由数组或链表通过操作函数来维持栈的封装定义</p>
+
+
+
+    <h2>完整代码</h2>
+    <p>数组版：</p>
+    <pre><code class="language-c">
+#include <stdio.h>
+#include <stdbool.h>
+#define MAX_NUM 100
+//struct stack* s;
+struct stack{
+    int arr[MAX_NUM];
+    int top;
+};
+int InitialStack(struct stack* pointer){
+    pointer->top = -1;
+    return pointer->top;
+}
+
+_Bool IsEmpty(struct stack* pointer){
+    return pointer->top == -1;
+}
+
+_Bool IsFull(struct stack* pointer){
+    return pointer->top == MAX_NUM - 1;
+}
+
+void Push(struct stack* pointer,int value){
+    // if(IsFull){
+    if(IsFull(pointer)){
+        printf("栈已满，无法加栈\n");
+        return;
+    }
+    pointer->arr[++pointer->top] = value;
+}
+
+void Pop(struct stack* pointer){
+    // if(IsEmpty){
+    if(IsEmpty(pointer)){
+        printf("栈空，无法减栈\n");
+        return;
+    }
+    pointer->arr[pointer->top--] = 0;
+}
+
+void Peak(struct stack* pointer){
+    if(IsEmpty(pointer)){
+        printf("栈空\n");
+        return;
+    }
+    printf("栈顶值为:%d\n",pointer->arr[pointer->top]);
+} 
+
+
+int main(){
+    struct stack m;
+    struct stack* s = &m;
+
+    
+    InitialStack(s);
+    Push(s,10);
+    Push(s,20);
+    Push(s,30);
+    Peak(s);
+    return 0;
+}
+
+
+
+
+</code></pre>
+    <p>链表版：</p>
+    <pre><code>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+struct linklist{
+    int data;
+    struct linklist* next;
+};
+
+struct linklist* InitailStack(void){
+    struct linklist* head = NULL;
+    return head;
+} 
+
+struct linklist* PushStack(struct linklist* head,int value){
+    struct linklist* NewNode = malloc(sizeof(struct linklist));
+    NewNode -> next = head;
+    NewNode -> data = value;
+    head = NewNode;
+    return head;
+}
+
+struct linklist* PopStack(struct linklist* head){
+    if(head == NULL){
+        printf("栈空，无法减栈\n");
+        return NULL;
+    }
+    struct linklist* temp = head;
+    head = head -> next;
+    free(temp);
+    return head;
+}
+
+void PeakStack(struct linklist* head){
+    if(head == NULL){
+        printf("栈空，无法打印顶栈值\n");
+        return;
+    }
+    printf("顶栈的值为%d\n",head->data);
+}
+
+int main(){
+    struct linklist* head = InitailStack();
+    head = PushStack(head, 20);
+    head = PushStack(head, 30);
+    head = PushStack(head, 40);
+    PeakStack(head);
+    return 0;
+    
+}
+
+    </code></pre>
+
+    <p><a href="/columns/stack_arr.c" download>下载数组版完整 C 源码</a></p>
+    <p><a href="/columns/stack_ll.c" download>下载链表版完整 C 源码</a></p>
+
+    <h2>运行结果</h2>
+    <ul>数组版：30</ul>
+    <ul>链表版：40</ul>
+    <p>数组版通过改变top值而改变arr的下标，从而改变栈顶位置</p>
+    <p>链表版则是以head头部指针作为top，如果放在尾部，则会每次具有O(n)的时间复杂度</p>
+    <p>两者的区别体现在数组不能像链表拥有理论无限的伸展空间，而链表由于指针的加入，每一节的占用内存会比数组大</p>
+
+    <h2>栈支不支持遍历？</h2>
+    <p>理论而言，当然是可以的，毕竟数组和链表都可以遍历</p>
+    <p>然而呢，根据栈的封装定义，他只能peak栈顶的值，而不能对其下面的数据遍历</p>
+    <p>是的，正是这样的造就了栈的“后进先出”，执意遍历会破坏栈的封闭定义</p>
+    <p>看似是限制，其实是为其功能作为的必要牺牲</p>
+    <p>这一点可以帮助我们更进一步掌握栈的内涵</p>
+
+    <h2>栈的应用</h2>
+    <p>由于是天然存在的逻辑，栈存在于很多事物中</p>
+    <p>在计算机的应用中，比较突出的有运算符号的顺序</p>
+    <p>这一点我稍后会把代码写出来</p>
+    <a href="https://www.runoob.com/c-dsa/c-dsa-stack.html">点此查看更多</a>
+    
+
+   
+
+    <p class="back-link"><a href="/columns/code.html">← 返回计算机学习</a></p>
+
+  </main>
+
+  <footer class="site-footer">
+  © 2026 Forest306
+  <span class="uptime" data-start="2026-09-10T21:40:00+08:00">运行 <span id="site-uptime">–</span></span>
+  <span class="visit">
+    <span id="busuanzi_container_site_pv">访问 <span class="num" id="busuanzi_value_site_pv"></span> 次</span>
+    <span id="busuanzi_container_site_uv">访客 <span class="num" id="busuanzi_value_site_uv"></span> 人</span>
+  </span>
+  </footer>
+
+</div>
+
+<!-- 左下角装饰立绘（半透明，不可点击） -->
+<img class="marisa" src="/assets/marisa.png" decoding="async" alt="" aria-hidden="true">
+
+<!-- 右下角：背景音乐（点一下播放 / 暂停，↗ 去网易云） -->
+<audio id="bgm" src="/assets/for-river.mp3" preload="none" loop></audio>
+
+<div class="now-playing" id="nowPlaying" data-state="ready">
+  <button class="np-toggle" type="button" aria-label="播放背景音乐" aria-pressed="false">
+    <span class="dot"></span>
+    <span class="label">点击播放</span>
+    <span class="title">For River</span>
+  </button>
+  <a class="np-ext"
+     href="https://music.163.com/#/song?id=1645112"
+     target="_blank" rel="noopener"
+     title="在网易云音乐打开" aria-label="在网易云音乐收听 For River（新窗口）">↗</a>
+</div>
+
+<script src="/assets/main.js" defer></script>
+<script src="/assets/player.js" defer></script>
+<script src="/assets/counter.js?v=73be5bc936f548f6" defer></script>
+
+<script src="/assets/lightbox.js" defer></script>
+</body>
+</html>
