@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>队列：栈是倒叙的回忆，而队列是顺叙的一生 · Forest306</title>
+<meta name="description" content="队列：栈是倒叙的回忆，而队列是顺叙的一生">
+<link rel="icon" href="/assets/avatar.jpg">
+<link rel="stylesheet" href="/assets/style.css?v=8dde9b3013683ebf">
+</head>
+<body data-anim="in">
+<a class="skip-link" href="#main-content">跳到正文</a>
+<p id="navigation-status" class="sr-only" role="status" aria-live="polite"></p>
+
+<header class="site-header">
+  <a class="brand" href="/index.html">
+    <img class="avatar" src="/assets/avatar.jpg" alt="头像" width="34" height="34" decoding="async">
+    <span>
+      <span class="brand-name">Forest306</span><br>
+      <span class="brand-sub">personal site</span>
+    </span>
+  </a>
+  <nav class="nav" aria-label="主要导航">
+    <a class="nav-link" href="/index.html">主页</a>
+    <a class="nav-link" href="/about.html">开盒</a>
+    <a class="nav-link is-active" aria-current="page" href="/columns.html">专栏</a>
+    <a class="nav-link" href="/diary.html">日记</a>
+    <a class="nav-link" href="/links.html">链接</a>
+    <a class="nav-link" href="/guestbook.html">留言</a>
+  </nav>
+</header>
+
+<div class="layout single">
+
+  <main class="page prose" id="main-content" tabindex="-1">
+    <p class="eyebrow">计算机学习 / <time datetime="2026-10-03">2026-10-09</time></p>
+    <h1>队列：栈是倒叙的回忆，而队列是顺叙的一生</h1>
+    <p class="lead"></p>
+
+    <p>在数据结构中，人们总是把栈和队列放在一起比较</p>
+    <p>相对于栈给人见面时的陌生感，队列本身的含义则能够让人们更容易理解其含义</p>
+    <p>如同排队时的进出关系，先进先出，便是队列的含义</p>
+    <p>同样于栈，他并不是一种底层的数据结构，不同于栈只注重栈顶，队列需要同时考虑前端和后端</p>
+
+
+
+
+    <h2>完整代码</h2>
+    <p>队列的实现方式同样也有很多种</p>
+    <p>第一种是我自己想出来的数组法</p>
+    <pre><code class="language-c">
+#include <stdio.h>
+#include <stdbool.h>
+#define MAX_NUM 100
+
+struct queue{
+    int arr[MAX_NUM];
+    int num;
+};
+
+int InitialQueue(struct queue* pointer){
+    pointer->num = -1;
+    return pointer->num;
+}
+
+_Bool IsFull(struct queue* pointer){
+    return pointer->num == MAX_NUM - 1;
+}
+
+_Bool IsEmpty(struct queue* pointer){
+    return pointer->num == -1;
+}
+
+void EnterQueue(struct queue* pointer,int value){
+    if(IsFull(pointer)){
+        printf("队列已满，无法加入\n");
+        return;
+    }
+    pointer->arr[++pointer->num] = value;
+    printf("入列：%d\n",value);
+    
+}
+
+void ExitQueue(struct queue* pointer){
+    if(IsEmpty(pointer)){
+        printf("队列已空，无法出列\n");
+        return;
+    }
+    int i = 1;
+    printf("出列：%d\n",pointer->arr[0]);
+    for(i = 1;i <= pointer->num;i++){
+        pointer->arr[i-1] = pointer->arr[i];
+    }
+    pointer->num--;
+    
+}
+</code></pre>
+<p>这种队列可以避免假溢出的情况，但是出列时需要数组的每个值向前移动，O(n)的时间复杂度，存在更好的替代方式</p>
+<br>
+    <p>含前后索引的数组法：</p>
+    <pre><code>
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX 100
+
+struct Queue {
+    int items[MAX];
+    int front;   /* 队首指针：指向第一个元素 */
+    int rear;    /* 队尾指针：指向下一个待插入位置 */
+};
+
+void initQueue(struct Queue* q) {
+    q->front = 0;
+    q->rear = 0;
+}
+
+bool isEmpty(struct Queue* q) {
+    return q->front == q->rear;
+}
+
+bool isFull(struct Queue* q) {
+    return q->rear == MAX;
+}
+
+/* 入队：在队尾添加元素 */
+void enqueue(struct Queue* q, int value) {
+    if (isFull(q)) {
+        printf("队列已满！\n");
+        return;
+    }
+    q->items[q->rear++] = value;  /* 在 rear 处写入，然后 rear 后移 */
+    printf("入队: %d\n", value);
+}
+
+/* 出队：从队首移除元素 */
+int dequeue(struct Queue* q) {
+    if (isEmpty(q)) {
+        printf("队列为空！\n");
+        return -1;
+    }
+    return q->items[q->front++];  /* 返回 front 处元素，然后 front 后移 */
+}
+
+int main() {
+    struct Queue q;
+    initQueue(&q);
+
+    enqueue(&q, 10);  /* 入队: 10 */
+    enqueue(&q, 20);  /* 入队: 20 */
+    enqueue(&q, 30);  /* 入队: 30 */
+
+    printf("出队: %d\n", dequeue(&q));  /* 输出: 出队: 10 (先进先出) */
+    printf("出队: %d\n", dequeue(&q));  /* 输出: 出队: 20 */
+    printf("出队: %d\n", dequeue(&q));  /* 输出: 出队: 30 */
+    return 0;
+}
+    </code></pre>
+    <p>通过前索引的移动来表示出列，有效避免了O(n)的复杂性</p>
+    <p>然而，这种方式也不是完美的，前索引只会往后移而不会复原，导致前索引前的位置会再也不发使用，也就是所谓的“假溢出”，最终使得队列的有效长度越来越小</p>
+    <br>
+    <p>将前面两种代码的结合，引出的便是下面的循环队列法</p>
+    <p>为了使被假溢出的位置得到重新利用，新的方法选择将后索引超过上限取余数使其返回至下标为0，没错，也就是出现了后索引在前索引之前的情况</p>
+    <p>这种思路一开始会让人感到一种不可言喻反直觉，就像是队列断开了的样子</p>
+    <p>但仔细想想确实是没有问题的，高手的思路就是不一样，高山仰止啊</p>
+    <pre><code>
+#include <stdio.h>
+#define MAX_NUM 5
+struct queue{
+    int arr[MAX_NUM];
+    int left;
+    int right;
+};
+
+void InitialQueue(struct queue* pointer){
+    pointer->left = 0;
+    pointer->right = 0;
+}
+
+_Bool IsFull(struct queue* pointer){
+    return (pointer->right + 1) % MAX_NUM == pointer->left;
+}
+
+_Bool IsEmpty(struct queue* pointer){
+    return pointer->right == pointer->left;
+}
+
+void EnterQueue(struct queue* pointer,int value){
+    if(IsFull(pointer)){
+        printf("队列已满，无法加入！\n");
+        return;
+    }
+    pointer->arr[pointer->right] = value;
+    pointer->right = (pointer->right + 1) % MAX_NUM;
+    printf("进入队列%d\n",value);
+}
+
+void ExitQueue(struct queue* pointer){
+    if(IsEmpty(pointer)){
+        printf("队列已空，无法退出！\n");
+        return;
+    }
+    printf("退出队列%d\n",pointer->arr[pointer->left]);
+    pointer->left = (pointer->left + 1)% MAX_NUM;
+}
+    </code></pre>
+
+    
+
+   
+
+    <p class="back-link"><a href="/columns/code.html">← 返回计算机学习</a></p>
+
+  </main>
+
+  <footer class="site-footer">
+  © 2026 Forest306
+  <span class="uptime" data-start="2026-09-10T21:40:00+08:00">运行 <span id="site-uptime">–</span></span>
+  <span class="visit">
+    <span id="busuanzi_container_site_pv">访问 <span class="num" id="busuanzi_value_site_pv"></span> 次</span>
+    <span id="busuanzi_container_site_uv">访客 <span class="num" id="busuanzi_value_site_uv"></span> 人</span>
+  </span>
+  </footer>
+
+</div>
+
+<!-- 左下角装饰立绘（半透明，不可点击） -->
+<img class="marisa" src="/assets/marisa.png" decoding="async" alt="" aria-hidden="true">
+
+<!-- 右下角：背景音乐（点一下播放 / 暂停，↗ 去网易云） -->
+<audio id="bgm" src="/assets/for-river.mp3" preload="none" loop></audio>
+
+<div class="now-playing" id="nowPlaying" data-state="ready">
+  <button class="np-toggle" type="button" aria-label="播放背景音乐" aria-pressed="false">
+    <span class="dot"></span>
+    <span class="label">点击播放</span>
+    <span class="title">For River</span>
+  </button>
+  <a class="np-ext"
+     href="https://music.163.com/#/song?id=1645112"
+     target="_blank" rel="noopener"
+     title="在网易云音乐打开" aria-label="在网易云音乐收听 For River（新窗口）">↗</a>
+</div>
+
+<script src="/assets/main.js" defer></script>
+<script src="/assets/player.js" defer></script>
+<script src="/assets/counter.js?v=73be5bc936f548f6" defer></script>
+
+<script src="/assets/lightbox.js" defer></script>
+</body>
+</html>
