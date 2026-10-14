@@ -1,0 +1,77 @@
+{
+  "1645112": {
+    "id": 1645112,
+    "name": "For River - Piano (Johnny's Version)",
+    "artists": [
+      {
+        "id": 38053,
+        "name": "Kan R. Gao"
+      }
+    ],
+    "album": {
+      "id": 167078,
+      "name": "To the Moon",
+      "cover": "https://p1.music.126.net/0AYWra9rCzgeprGp6OUyUw==/868614185993997.jpg"
+    }
+  },
+  "2737919838": {
+    "id": 2737919838,
+    "name": "Caravan",
+    "artists": [
+      {
+        "id": 34783735,
+        "name": "a_hisa"
+      }
+    ],
+    "album": {
+      "id": 282140188,
+      "name": "Single Collection",
+      "cover": "https://p1.music.126.net/v0Kt7wMX0H04pMjsC8B6ng==/109951171898218526.jpg"
+    }
+  },
+  "729361": {
+    "id": 729361,
+    "name": "ただいま/おかえり",
+    "artists": [
+      {
+        "id": 191098,
+        "name": "だ、ごんだくたー"
+      }
+    ],
+    "album": {
+      "id": 71414,
+      "name": "東方阿漕祭",
+      "cover": "https://p1.music.126.net/4Kvo7e882CKV0bRnFkJYwg==/874111744125706.jpg"
+    }
+  },
+  "729467": {
+    "id": 729467,
+    "name": "ハルノカゼ",
+    "artists": [
+      {
+        "id": 19456,
+        "name": "Forest306"
+      }
+    ],
+    "album": {
+      "id": 71426,
+      "name": "ハルノカゼ",
+      "cover": "https://p1.music.126.net/xVy4lW2CTGQFb7CJkWohLA==/719080604577559.jpg"
+    }
+  },
+  "775330": {
+    "id": 775330,
+    "name": "月の眷属达",
+    "artists": [
+      {
+        "id": 20363,
+        "name": "来夢緑"
+      }
+    ],
+    "album": {
+      "id": 76405,
+      "name": "永夜の月 初版",
+      "cover": "https://p1.music.126.net/xXIxeuI7c6pAXZ7rxtQSgg==/815837627809983.jpg"
+    }
+  }
+}

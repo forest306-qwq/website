@@ -767,3 +767,37 @@ body.is-loading::before { content:""; position:fixed; top:0; left:0; right:0; he
   }
 }
 
+/* 每日一歌：封面与歌曲信息直接呈现在歌单里。 */
+.song-entry {
+  display:grid;
+  grid-template-columns:144px minmax(0,1fr);
+  gap:28px;
+  padding:30px 0;
+  border-bottom:1px solid var(--line);
+  scroll-margin-top:120px;
+}
+.song-cover { display:block; align-self:start; }
+.song-cover img {
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:1;
+  object-fit:cover;
+  border-radius:6px;
+  border:1px solid var(--line);
+}
+.song-info { min-width:0; }
+.song-info .date { margin:0 0 7px; font-size:11px; letter-spacing:.14em; color:var(--muted); }
+.song-info h3 { margin:0 0 12px; font-size:20px; font-weight:600; line-height:1.5; }
+.song-artists,.song-album { margin:4px 0; font-size:13px; color:var(--sub); overflow-wrap:anywhere; }
+.song-label { display:inline-block; margin-right:12px; color:var(--muted); font-size:11px; }
+.song-info a { transition:color .2s ease; }
+.song-info a:hover { color:var(--accent); }
+.song-note { margin:14px 0 0; font-size:13px; color:var(--sub); }
+@media (max-width:640px) {
+  .song-entry { grid-template-columns:92px minmax(0,1fr); gap:18px; padding:25px 0; scroll-margin-top:150px; }
+  .song-info h3 { font-size:17px; margin-bottom:9px; }
+  .song-info .date { font-size:10px; letter-spacing:.09em; }
+  .song-label { margin-right:8px; }
+  .song-artists,.song-album,.song-note { font-size:12px; }
+}

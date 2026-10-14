@@ -10,6 +10,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 import re
 import time
+from song_metadata import song_id, load_catalog, render_songs, entry_href
 
 
 @dataclass
@@ -104,8 +105,11 @@ def collect(site):
             stamp = next((parse_date(node.attrs.get('datetime', '')) for node in main.find('time') if parse_date(node.attrs.get('datetime', ''))), None)
         if not stamp:
             raise ValueError(f'{path.name}: 请使用 261003.html / song-261003.html，或填写 article:date')
-        summary = meta.get('article:summary') or plain(first(main, cls='lead')) or plain(first(main, 'p'))
-        entries.append(dict(title=title, date=stamp, category=category, summary=summary, href='/' + path.relative_to(site).as_posix()))
+        summary = meta.get('article:summary') or plain(first(main, cls='lead')) or (plain(first(main, 'p')) if category != 'song' else '')
+        entry = dict(title=title, date=stamp, category=category, summary=summary, href='/' + path.relative_to(site).as_posix())
+        if category == 'song':
+            entry['song_id'] = song_id(main, meta)
+        entries.append(entry)
     diary = Document((site / 'diary.html').read_text(encoding='utf-8-sig')).root
     for node in diary.find('article', 'diary-item'):
         title = plain(first(node, 'h3'))
@@ -166,7 +170,7 @@ def sync(site):
     entries = collect(site)
     labels = {'code': '计算机学习', 'song': '每日一歌', 'diary': '日记'}
     latest = '\n'.join(
-        f'      <a class="latest-link" href="{escape(e["href"], quote=True)}"><span class="latest-title">{escape(e["title"])}</span><span class="latest-date">{labels[e["category"]]} · {e["date"]}</span></a>' for e in entries[:3])
+        f'      <a class="latest-link" href="{escape(entry_href(e), quote=True)}"><span class="latest-title">{escape(e["title"])}</span><span class="latest-date">{labels[e["category"]]} · {e["date"]}</span></a>' for e in entries[:3])
     if not latest:
         latest = '      <p class="note">还没有发布内容。</p>'
     # 先完成所有解析、生成和校验，再写入；错误时保留原页面。
@@ -184,7 +188,8 @@ def sync(site):
         region = category.upper() + '-LIST'
         manual = manual_list_hrefs(text, region)
         generated = [entry for entry in selected if entry['href'] not in manual]
-        updates[relative] = replace_region(text, region, render_list(generated),
+        content = render_songs(generated, load_catalog(site, [e['song_id'] for e in selected])) if category == 'song' else render_list(generated)
+        updates[relative] = replace_region(text, region, content,
             r'<article class="diary-item"[^>]*>.*?</article>(?:\s*<article class="diary-item"[^>]*>.*?</article>)*(?:\s*<!-- 添加.*?-->)?')
     text = load('columns.html')
     for category, unit, suffix in [('code', '篇', 'Notes'), ('song', '首', 'Songs')]:
