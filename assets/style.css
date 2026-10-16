@@ -755,7 +755,7 @@ body.is-loading::before { content:""; position:fixed; top:0; left:0; right:0; he
   background-color:#edf1fa;
   background-image:
     linear-gradient(180deg, rgba(255,255,255,.12) 0%, rgba(255,255,255,.08) 45%, rgba(255,255,255,.42) 76%, #fff 100%),
-    url("/assets/home-sky.webp");
+    var(--backdrop-image, url("/assets/home-sky.webp"));
   background-position:center, center 43%;
   background-size:cover;
   background-repeat:no-repeat;
@@ -800,4 +800,13 @@ body.is-loading::before { content:""; position:fixed; top:0; left:0; right:0; he
   .song-info .date { font-size:10px; letter-spacing:.09em; }
   .song-label { margin-right:8px; }
   .song-artists,.song-album,.song-note { font-size:12px; }
+}
+
+/* 日记背景沿用主页的高度、滚动与渐变，单独调整图片焦点。 */
+.diary-backdrop {
+  --backdrop-image:url("/assets/diary-summer.webp");
+  background-position:center, center 44%;
+}
+@media (max-width:640px) {
+  .diary-backdrop { background-position:center, 74% center; }
 }
