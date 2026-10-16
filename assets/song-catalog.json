@@ -73,5 +73,20 @@
       "name": "永夜の月 初版",
       "cover": "https://p1.music.126.net/xXIxeuI7c6pAXZ7rxtQSgg==/815837627809983.jpg"
     }
+  },
+  "33933850": {
+    "id": 33933850,
+    "name": "Gold Steps",
+    "artists": [
+      {
+        "id": 762404,
+        "name": "Neck Deep"
+      }
+    ],
+    "album": {
+      "id": 3266511,
+      "name": "Life's Not Out to Get You",
+      "cover": "https://p2.music.126.net/-7r2eTC1ruLatpUfIDp8UA==/109951163661363303.jpg"
+    }
   }
 }
