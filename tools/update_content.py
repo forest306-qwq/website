@@ -10,7 +10,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 import re
 import time
-from song_metadata import song_id, load_catalog, render_songs, entry_href
+from song_metadata import song_id, load_catalog, render_songs, entry_href, automated_entries
 
 
 @dataclass
@@ -110,6 +110,7 @@ def collect(site):
         if category == 'song':
             entry['song_id'] = song_id(main, meta)
         entries.append(entry)
+    entries.extend(automated_entries(site, entries))
     diary = Document((site / 'diary.html').read_text(encoding='utf-8-sig')).root
     for node in diary.find('article', 'diary-item'):
         title = plain(first(node, 'h3'))
@@ -211,7 +212,7 @@ def sync(site):
 
 
 def signature(site):
-    paths = [site / 'diary.html'] + [p for p in (site / 'columns').rglob('*.html') if p.name not in {'code.html', 'song.html'}]
+    paths = [site / 'diary.html', site / 'data' / 'daily-songs.json'] + [p for p in (site / 'columns').rglob('*.html') if p.name not in {'code.html', 'song.html'}]
     result = []
     for path in sorted(paths):
         try:

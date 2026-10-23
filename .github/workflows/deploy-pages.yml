@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    # UTC 15:37 = 北京时间 23:37；GitHub 调度可能延迟。
+    - cron: '37 15 * * *'
 
 permissions:
   contents: read
@@ -15,31 +18,91 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      publish: ${{ steps.changes.outputs.publish }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          ref: main
 
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
           python-version: '3.13'
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Verify daily song automation
+        run: |
+          node --test tools/test_daily_song.cjs
+          python -m unittest discover -s tools -p 'test_daily_song.py'
+
+      - name: Read weekly ranking and update daily song
+        id: music
+        continue-on-error: true
+        run: |
+          node tools/fetch_daily_song.cjs --output "$RUNNER_TEMP/daily-song.json"
+          python tools/sync_daily_song.py --input "$RUNNER_TEMP/daily-song.json"
+
+      - name: Restore content after a failed sync
+        if: steps.music.outcome == 'failure'
+        run: git restore -- data/daily-songs.json data/daily-song-state.json assets/song-catalog.json index.html columns/song.html columns/code.html columns.html
+
+      - name: Report a failed scheduled sync
+        if: github.event_name == 'schedule' && steps.music.outcome == 'failure'
+        run: |
+          echo 'Daily song sync failed. The published website is unchanged.'
+          exit 1
+
+      - name: Check whether publication is needed
+        id: changes
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT_NAME" != 'schedule' ] || ! git diff --quiet; then
+            echo 'publish=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'publish=false' >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Configure Pages
+        if: steps.changes.outputs.publish == 'true'
         id: pages
         uses: actions/configure-pages@v5
 
       - name: Update articles and build website
+        if: steps.changes.outputs.publish == 'true'
         env:
           PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
         run: python tools/build_pages.py
 
+      - name: Save generated songs and indexes
+        if: steps.changes.outputs.publish == 'true' && steps.music.outcome == 'success'
+        run: |
+          git add data/daily-songs.json data/daily-song-state.json assets/song-catalog.json index.html columns/song.html columns/code.html columns.html
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'Update daily song from weekly NetEase ranking'
+            # A normal push refuses to overwrite any concurrent manual changes.
+            git push origin HEAD:main
+          fi
+
       - name: Upload website
+        if: steps.changes.outputs.publish == 'true'
         uses: actions/upload-pages-artifact@v4
         with:
           path: _site
 
   deploy:
     needs: build
+    if: needs.build.outputs.publish == 'true'
     runs-on: ubuntu-latest
     permissions:
       pages: write

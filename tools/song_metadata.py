@@ -1,10 +1,33 @@
 """在构建时读取网易云歌曲信息，页面无需调用跨域接口。"""
 from html import escape
+from datetime import date
 import json
 from pathlib import Path
 import re
 from urllib.parse import parse_qs, quote, urlsplit
 from urllib.request import Request, urlopen
+
+
+def automated_entries(site, manual_entries):
+    """自动选歌只保存日期和歌曲编号，页面仍使用同一套歌曲卡片。"""
+    path = Path(site) / 'data' / 'daily-songs.json'
+    if not path.is_file():
+        return []
+    archive = json.loads(path.read_text(encoding='utf-8-sig'))
+    if not isinstance(archive, dict):
+        raise ValueError('自动选歌记录格式错误')
+    manual_dates = {e['date'] for e in manual_entries if e['category'] == 'song'}
+    selected = []
+    for stamp, identifier in archive.items():
+        if date.fromisoformat(stamp).isoformat() != stamp or not isinstance(identifier, str) or not identifier.isdecimal() or int(identifier) <= 0:
+            raise ValueError('自动选歌日期或编号错误')
+        if stamp not in manual_dates:
+            selected.append((stamp, identifier))
+    catalog = load_catalog(site, [identifier for _, identifier in selected])
+    return [dict(date=stamp, title=catalog[identifier]['name'], song_id=identifier,
+                 category='song', summary='', automatic=True,
+                 href='/columns/song-auto-' + stamp.replace('-', '') + '.html')
+            for stamp, identifier in selected]
 
 
 def song_id(main, meta):
