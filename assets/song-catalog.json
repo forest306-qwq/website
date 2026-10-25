@@ -14,6 +14,21 @@
       "cover": "https://p1.music.126.net/0AYWra9rCzgeprGp6OUyUw==/868614185993997.jpg"
     }
   },
+  "2139294992": {
+    "id": 2139294992,
+    "name": "花日",
+    "artists": [
+      {
+        "id": 12157336,
+        "name": "CMJ"
+      }
+    ],
+    "album": {
+      "id": 190092618,
+      "name": "花日",
+      "cover": "https://p1.music.126.net/XB-vD5BH1FgvGPfh_Ut9BQ==/109951169445464429.jpg"
+    }
+  },
   "22707008": {
     "id": 22707008,
     "name": "潮鳴り",
