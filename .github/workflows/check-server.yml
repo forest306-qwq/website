@@ -29,7 +29,10 @@ jobs:
         with:
           node-version: '22'
       - name: Check installer syntax
-        run: bash -n tools/install-server-autodeploy.sh tools/install-server-counter.sh tools/install-server-visitors.sh
+        run: |
+          for installer in tools/install-server-*.sh; do
+            bash -n "$installer"
+          done
       - name: Check private visitor and counter services
         run: python -m unittest discover -s server -p 'test_*.py'
       - name: Check browser scripts
