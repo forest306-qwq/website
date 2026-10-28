@@ -96,6 +96,8 @@ limit_req_zone $binary_remote_addr zone=forest306_counter:1m rate=5r/s;
 LIMIT
 cat > /etc/nginx/snippets/forest306-counter.conf <<'LOCATION'
 location = /api/site-counter {
+    # Public aggregate counts remain compatible with the optional nickname entrance.
+    auth_request off;
     limit_req zone=forest306_counter burst=10 nodelay;
     limit_req_status 429;
     client_max_body_size 1k;

@@ -1,0 +1,38 @@
+name: Check server components
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'server/**'
+      - 'tools/install-server-*.sh'
+      - '.github/workflows/check-server.yml'
+  pull_request:
+    paths:
+      - 'server/**'
+      - 'tools/install-server-*.sh'
+      - '.github/workflows/check-server.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check installer syntax
+        run: bash -n tools/install-server-autodeploy.sh tools/install-server-counter.sh tools/install-server-visitors.sh
+      - name: Check private visitor and counter services
+        run: python -m unittest discover -s server -p 'test_*.py'
+      - name: Check browser scripts
+        run: |
+          node --check server/visitor/visitor.js
+          node --test server/test_counter_frontend.cjs
