@@ -31,10 +31,10 @@ finish() {
 }
 trap finish EXIT
 base="https://raw.githubusercontent.com/forest306-qwq/website/$ref/server"
-for file in counter_service.py configure_counter_nginx.py test_counter.py; do
+for file in counter_service.py configure_counter_nginx.py check_counter_ready.py test_counter.py test_counter_ready.py; do
   curl --fail --location --retry 2 --connect-timeout 15 --max-time 90 "$base/$file" -o "$work/$file"
 done
-python3 -m unittest discover -s "$work" -p test_counter.py
+python3 -m unittest discover -s "$work" -p 'test_counter*.py'
 if ! id forestcounter >/dev/null 2>&1; then
   useradd --system --user-group --home-dir /var/lib/forest306-counter --no-create-home --shell /usr/sbin/nologin forestcounter
 fi
@@ -81,9 +81,7 @@ SERVICE
 systemctl daemon-reload
 systemctl enable forest306-counter.service
 systemctl restart forest306-counter.service
-curl --noproxy '*' --fail --silent --show-error --retry 8 --retry-connrefused --retry-delay 1 \
-  --max-time 5 -H 'Host: nwuc.cn' http://127.0.0.1:8793/api/site-counter \
-  | python3 -c "import json,sys; assert json.load(sys.stdin)['success']"
+python3 "$work/check_counter_ready.py" --backend
 mkdir -p "$work/backup" /etc/nginx/snippets
 for file in "${configs[@]}"; do
   if [[ -e "$file" ]]; then
@@ -112,10 +110,13 @@ location = /api/site-counter {
 LOCATION
 python3 "$work/configure_counter_nginx.py" "$target"
 nginx -t
+nginx -T > "$work/nginx-active.txt" 2>/dev/null
+if ! grep -Fq '# configuration file /etc/nginx/snippets/forest306-counter.conf:' "$work/nginx-active.txt"; then
+  echo "Counter snippet is not loaded by the active Nginx configuration; site config needs review." >&2
+  exit 1
+fi
 systemctl reload nginx
-curl --noproxy '*' --resolve nwuc.cn:443:127.0.0.1 --fail --silent --show-error --max-time 10 \
-  https://nwuc.cn/api/site-counter \
-  | python3 -c "import json,sys; assert json.load(sys.stdin)['success']"
+python3 "$work/check_counter_ready.py"
 installed=1
 echo "Counter installed successfully."
 echo "Data: /var/lib/forest306-counter/counter.sqlite3"
