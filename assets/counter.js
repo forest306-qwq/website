@@ -1,13 +1,10 @@
-/* 页脚统计：单一数据源；每次打开页面或完成站内切换计一次访问。 */
+/* 自建访问统计；数据保存在服务器，两个域名共用 Cookie 和总数。 */
 (function () {
   "use strict";
   if (window.__countReload) return;
-
-  var API = "https://busuanzi.9420.ltd/api";
-  var IDENTITY_KEY = "forest306-counter-identity";
-  var activeRequest;
   var lastPage;
   var sequence = 0;
+  var queue = Promise.resolve();
 
   function renderCounts(pv, uv, state, message) {
     var visit = document.querySelector(".site-footer .visit");
@@ -22,47 +19,56 @@
     });
   }
 
-  async function countVisit() {
-    var page = location.origin + location.pathname;
+
+  async function sendVisit(event) {
+    for (var attempt = 0; attempt < 2; attempt++) {
+      var controller = new AbortController();
+      var timeout = setTimeout(function () { controller.abort(); }, 8000);
+      try {
+        var response = await fetch("/api/site-counter", {
+          method: "POST",
+          credentials: "same-origin",
+          cache: "no-store",
+          headers: { "Content-Type": "application/json", "X-Counter-Request": "1" },
+          body: JSON.stringify({ event: event }),
+          signal: controller.signal
+        });
+        if (!response.ok) throw new Error("Counter HTTP " + response.status);
+        var result = await response.json();
+        var data = result.data;
+        if (!result.success || !data || ![data.site_pv, data.site_uv].every(function (value) {
+          return /^\d+$/.test(String(value)) && Number.isSafeInteger(Number(value));
+        })) throw new Error("Invalid counter response");
+        return data;
+      } catch (error) {
+        if (attempt === 1) throw error;
+      } finally {
+        clearTimeout(timeout);
+      }
+    }
+  }
+
+  function countVisit() {
+    var page = location.pathname;
     if (page === lastPage) return;
     lastPage = page;
-    var id = ++sequence;
-    if (activeRequest) activeRequest.abort();
     if (location.protocol === "file:" || /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)) {
       renderCounts("–", "–", "preview", "本地预览不计入访问统计");
       return;
     }
-
-    var controller = new AbortController();
-    activeRequest = controller;
-    var timeout = setTimeout(function () { controller.abort(); }, 8000);
-    var headers = { "x-bsz-referer": page };
-    try {
-      var identity = localStorage.getItem(IDENTITY_KEY);
-      if (identity) headers.Authorization = "Bearer " + identity;
-    } catch (_) { /* 禁用存储时，服务仍可根据 IP 和浏览器识别访客。 */ }
-    renderCounts("…", "…", "loading", "正在读取访问统计");
-    try {
-      var response = await fetch(API, {
-        method: "POST", headers: headers, cache: "no-store", signal: controller.signal
-      });
-      if (!response.ok) throw new Error("HTTP " + response.status);
-      var result = await response.json();
-      var data = result.data;
-      if (!result.success || !data || ![data.site_pv, data.site_uv].every(function (value) {
-        return /^\d+$/.test(String(value)) && Number.isSafeInteger(Number(value));
-      })) throw new Error("Invalid counter response");
-      var token = response.headers.get("Set-Bsz-Identity");
-      if (token) {
-        try { localStorage.setItem(IDENTITY_KEY, token); } catch (_) { /* 存储不可用不影响显示。 */ }
-      }
-      if (id === sequence) renderCounts(data.site_pv, data.site_uv, "ready");
-    } catch (_) {
-      if (id === sequence) renderCounts("–", "–", "error", "统计服务暂时不可用，请稍后再访问");
-    } finally {
-      clearTimeout(timeout);
-      if (id === sequence) activeRequest = null;
+    if (!/^(www\.)?nwuc\.cn$/.test(location.hostname)) {
+      renderCounts("–", "–", "preview", "访问 nwuc.cn 查看站点统计");
+      return;
     }
+    var id = ++sequence;
+    var event = crypto.randomUUID();
+    renderCounts("…", "…", "loading", "正在读取访问统计");
+    // Serialize navigation events so the first response can establish the shared cookie.
+    queue = queue.then(function () { return sendVisit(event); }).then(function (data) {
+      if (id === sequence) renderCounts(data.site_pv, data.site_uv, "ready", "本站服务器统计；访客数按浏览器 Cookie 去重");
+    }).catch(function () {
+      if (id === sequence) renderCounts("–", "–", "error", "统计服务暂不可用，请稍后刷新");
+    });
   }
 
   function num(value) { return '<span class="num">' + value + "</span>"; }
@@ -79,6 +85,7 @@
     box.innerHTML = days ? num(days) + " 天 " + num(hours % 24) + " 小时" :
       hours ? num(hours) + " 小时 " + num(minutes % 60) + " 分" : num(minutes) + " 分钟";
   }
+
 
   function refresh() {
     renderUptime();

@@ -1,6 +1,7 @@
 """构建 GitHub Pages：更新静态列表，并适配仓库子路径。"""
 from pathlib import Path
 import os
+import hashlib
 import re
 import shutil
 import subprocess
@@ -25,6 +26,12 @@ def build(site, base_path=''):
         if (site / name).is_file():
             shutil.copyfile(site / name, destination / name)
     (destination / '.nojekyll').touch()
+    # Version the counter script in every generated page, including article pages.
+    revision = hashlib.sha256((destination / 'assets' / 'counter.js').read_bytes()).hexdigest()[:16]
+    for path in destination.rglob('*.html'):
+        text = path.read_text(encoding='utf-8')
+        text = re.sub(r"""(/assets/counter\.js)(?:\?v=[^"'<> ]*)?""", lambda m: m[1] + '?v=' + revision, text)
+        path.write_text(text, encoding='utf-8', newline='\n')
     if base:
         for path in destination.rglob('*.html'):
             text = path.read_bytes().decode('utf-8')
