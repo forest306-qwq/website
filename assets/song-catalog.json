@@ -119,6 +119,25 @@
       "cover": "https://p2.music.126.net/-7r2eTC1ruLatpUfIDp8UA==/109951163661363303.jpg"
     }
   },
+  "529391958": {
+    "id": 529391958,
+    "name": "疑惑の芽生え",
+    "artists": [
+      {
+        "id": 15345,
+        "name": "上海アリス幻樂団"
+      },
+      {
+        "id": 21986,
+        "name": "黄昏フロンティア"
+      }
+    ],
+    "album": {
+      "id": 37099613,
+      "name": "東方憑依華　～ Antinomy of Common Flowers.",
+      "cover": "https://p2.music.126.net/s2QaQfYiZWF_fITBkG2BAQ==/109951163104927039.jpg"
+    }
+  },
   "729361": {
     "id": 729361,
     "name": "ただいま/おかえり",
